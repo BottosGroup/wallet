@@ -1,4 +1,7 @@
-const {app, BrowserWindow} = require('electron')
+// const {app, BrowserWindow} = require('electron')
+// const {app,BrowserWindow,webContents} = require('electron')
+const electron = require('electron');
+const {app, BrowserWindow, Menu, ipcMain, ipcRenderer,webContents} = electron;
 const path = require('path')
 const url = require('url')
 const pkg = require('./package.json')
@@ -9,7 +12,19 @@ let win
 
 function createWindow () {
   // 创建浏览器窗口。
-  win = new BrowserWindow({width: 800, height: 600})
+  win = new BrowserWindow({
+    width: 800, 
+    height: 600,
+    autoHideMenuBar: true,
+    fullscreenable: false,
+    webPreferences: {
+        javascript: true,
+        plugins: true,
+        nodeIntegration: false, // 不集成 Nodejs
+        webSecurity: false,
+        preload: path.join(__dirname, './public/renderer.js') // 但预加载的 js 文件内仍可以使用 Nodejs 的 API
+    }
+  })
 
   // 然后加载应用的 index.html。
   // package中的DEV为true时，开启调试窗口。为false时使用编译发布版本
@@ -24,7 +39,12 @@ function createWindow () {
   }
 
   // 打开开发者工具。
-  // win.webContents.openDevTools()
+  win.webContents.openDevTools()
+
+  win.once('ready-to-show', () => {
+    // win.show()
+    win.yuanjunliang = 'yuanjunliang'
+  })
 
   // 当 window 被关闭，这个事件会被触发。
   win.on('closed', () => {
@@ -57,10 +77,12 @@ app.on('activate', () => {
   }
 })
 
+
 // 在这文件，你可以续写应用剩下主进程代码。
 // 也可以拆分成几个文件，然后用 require 导入。
 
 // 文件模块
-const BTFile = require('./sys_modules/BTFile')
+const BTFile = require('./src/sys_modules/BTFile')
 
-BTFile.getAppPath()
+// BTFile.getAppPath()
+

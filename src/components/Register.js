@@ -2,13 +2,10 @@ import React,{PureComponent} from 'react'
 import {Modal,Form, Icon, Input, Button,Radio,Checkbox,message} from 'antd'
 import BTFetch from '../utils/BTFetch'
 import BTCryptTool from '../tools/BTCryptTool'
+// import {importFile,exportFile} from '../sys_modules/BTFile'
 import './styles.less'
-
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
-
-
-
 
 export default class IsRegister extends PureComponent{
     constructor(props){
@@ -59,7 +56,7 @@ class Regist extends PureComponent{
         super(props)
     }
 
-    onHandleSubmit(self){
+    async onHandleSubmit(self){
         const { getFieldDecorator,getFieldsValue,getFieldValue } = self;
         let fieldValues = getFieldsValue()
 
@@ -68,72 +65,108 @@ class Regist extends PureComponent{
         let user_type = fieldValues.user_type;
         let role_type = fieldValues.role_type;
         let email = fieldValues.email;
-        
-        // 生成两对公私钥
-        let owner_keys = BTCryptTool.createPubPrivateKeys(username+'owner_pub_key');
-        let active_keys = BTCryptTool.createPubPrivateKeys(username+'active_pub_key');
+        let password = fieldValues.password;
 
+        // 生成两对公私钥
+        let owner_keys = await BTCryptTool.createPubPrivateKeys();
+        let active_keys = await BTCryptTool.createPubPrivateKeys();
+
+        // 两对公钥
         let owner_pub_key = owner_keys.publicKey;
         let active_pub_key = active_keys.publicKey;
 
+        // 两对私钥
+        let owner_private_key = owner_keys.privateKey;
+        let active_private_key = active_keys.privateKey;
+
+        // 两对sign时用的私钥
+        let owner_private_wif = owner_keys.privateWif;
+        let active_private_wif = active_keys.privateWif;
+
         // 生成encypted_info  owner_pub_key
         let info = {email}
-        let encypted_info = BTCryptTool.aesEncrypto(JSON.stringify(info),username);
-        // let decrypted = BTCryptTool.aesDecrypto(encypted_info,username)
+        let encypted_info = BTCryptTool.aesEncrypto(JSON.stringify(info),password);
+        let decrypted = BTCryptTool.aesDecrypto(encypted_info,password)
 
         // 创建签名  username +owner_pub_key +active_pub_key
-        let owner_private_key = owner_keys.privateKey;
         let signKey = username + owner_pub_key + active_pub_key;
-        let signature_account = BTCryptTool.sign(signKey,owner_pub_key);
+        let signature_account = BTCryptTool.sign(signKey,owner_private_wif);
 
         // 创建signature_user  username +owner_pub_key +active_pub_key +info +signature_account
         let signature_user_key = username + owner_pub_key + active_pub_key + signature_account;
-        let signature_user = BTCryptTool.sign(signature_user_key,owner_private_key);
+        let signature_user = BTCryptTool.sign(signature_user_key,owner_private_wif);
 
         // console.log({
         //     owner_keys,
         //     active_keys,
+        //     owner_pub_key,
+        //     active_pub_key,
+        //     encypted_info,
+        //     decrypted,
+        //     info,
+        //     owner_private_key,
+        //     signKey,
         //     signature_account,
-        //     signature_user,
-        //     encypted_info
+        //     signature_user
         // })
 
         // 发送注册请求
         let params = {};
         params = {
             username:username,
-            user_info:'sdkjflsdfj',
-                encypted_info:"encypted_info",
-                user_type:user_type,  // 0:个人  1:公司
-                role_type:role_type,
+            user_info:{
+                encypted_info:encypted_info.toString(),
+                user_type,// 0:个人  1:公司
+                role_type, // 0:数据提供  1:数据招募 2:数据审核
+            },
             owner_pub_key:owner_pub_key.toString(),
             active_pub_key:active_pub_key.toString(),
             signature_account:signature_account,
             signature_user:signature_user
         }
 
-        console.log({
-            params
+        // 将两对私钥加密以后存储到本地
+        let privateKeys = {
+            owner_private_key,
+            owner_private_wif,
+            active_private_key,
+            active_private_wif
+        }
+        // 对两对私钥进行加密后存储成keystore文件
+        let reqUrl = '/user/register'
+        BTFetch(reqUrl,'POST',params)
+        .then(response=>{
+            if(response && response.code=='0'){
+                message.success('注册成功')
+                this.setState({
+                    visible:false
+                })
+                // 将两对私钥加密以后存储到本地
+                this.exportKeystore(privateKeys,password);
+            }
         })
+        .catch(error=>{
+            message.error('注册失败')
+            this.setState({
+                visible:false
+            })
+        })
+    }
 
-        // let reqUrl = '/user/register'
+    // 将两对私钥加密后存储到本地
+    exportKeystore(privateKeys,password){
+        let privateKeyStr = JSON.stringify(privateKeys)
+        let cryptStr = BTCryptTool.aesEncrypto(privateKeyStr,password)
+        let decryStr = BTCryptTool.aesDecrypto(cryptStr.toString(),password)
 
-        // BTFetch(reqUrl,'POST',params)
-        // .then(response=>{
-        //     if(response && response.code=='1'){
-        //         message.success('注册成功')
-        //         this.setState({
-        //             visible:false
-        //         })
-        //     }
-
+        // console.log({
+        //     cryptStr,
+        //     cryptStrstr:cryptStr.toString(),
+        //     decryStr
         // })
-        // .catch(error=>{
-        //     message.error('注册失败')
-        //     this.setState({
-        //         visible:false
-        //     })
-        // })
+        // 存储keystore文件
+        // exportFile(cryptStr.toString(),"text/json;charset=utf-8",'keystore.bto')
+        // exportFile(JSON.stringify(privateKeys),"text/json;charset=utf-8",'keystore.json')
     }
 
     render(){
@@ -184,28 +217,34 @@ class Regist extends PureComponent{
                 </FormItem>
                 <FormItem
                     {...formItemLayout}
-                    label="用户名"
+                    label="email"
                 >
+                    {
+                        getFieldDecorator('email',{})(
+                            <Input placeholder="请输入email" id="error2" />
+                        )
+                    }
+                    
+                </FormItem>
+
+                <FormItem {...formItemLayout} label="用户名">
                 {
                     getFieldDecorator('username',{
                         
                     })(
                         <Input placeholder="请输入用户名" id="error1" />
                     )
-                }
-                    
+                }   
                 </FormItem>
 
-                <FormItem
-                    {...formItemLayout}
-                    label="email"
-                >
+                <FormItem {...formItemLayout} label="密码">
                     {
-                        getFieldDecorator('emial',{})(
-                            <Input placeholder="请输入email" id="error2" />
+                        getFieldDecorator('password',{
+
+                        })(
+                            <Input placeholder="请输入密码" id="error1"/>
                         )
                     }
-                    
                 </FormItem>
 
                 <div style={{display:'flex',justifyContent:'flex-end'}}>

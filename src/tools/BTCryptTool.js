@@ -14,7 +14,8 @@ const createPubPrivateKeys = async()=>{
 
     return {
         privateKey,
-        publicKey
+        publicKey,
+        privateWif
     }
 }
 
@@ -69,7 +70,7 @@ const aesEncrypto = (message,secretKey)=>{
 
 // AES对称解密
 const aesDecrypto = (aesSecretMessage, secretKey)=>{
-    let bytes  = CryptoJS.AES.decrypt(aesSecretMessage.toString(), secretKey);
+    let bytes  = CryptoJS.AES.decrypt(aesSecretMessage, secretKey);
     let plaintext = bytes.toString(CryptoJS.enc.Utf8);
     return plaintext;
 }

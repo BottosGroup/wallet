@@ -6,5 +6,7 @@ module.exports = function override(config, env) {
     config = rewireLess.withLoaderOptions({
         modifyVars: { "@primary-color": "#1DA57A" },
     })(config, env);
+
+    // config.target = 'electron-renderer'
     return config;
 };

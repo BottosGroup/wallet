@@ -1,10 +1,16 @@
 import config from './config.js'
-const version = config.version;
 
-export default (url,method,params)=>{
+export default (url,method,params,SERVER="service")=>{
+    let blockchain = config.blockchain;
+    let service = config.service;
+    let reqUrl = ''
+    if(SERVER==='service'){
+        reqUrl = service.base_url + service.version+url
+    }else{
+        reqUrl = blockchain.base_url + blockchain.version
+    }
+
     let methodUpStr = method.toUpperCase(); // 统一转换成大写
-    let fetchUrl = config.baseUrl + '/identity' + url;
-
     let requestParams = {
         method: methodUpStr,
         headers: {
@@ -13,19 +19,13 @@ export default (url,method,params)=>{
     };
     if (methodUpStr == 'GET') {
         let str = getFetchUrl(params);
-        fetchUrl += str;
-      }else{
-          requestParams.body = JSON.stringify(params);
-      }
+        reqUrl += str;
+    }else{
+        requestParams.body = JSON.stringify(params);
+    }
 
-
-      console.log({
-          fetchUrl,
-          requestParams
-      })
-
-      return fetch(fetchUrl, requestParams)
-      .then(response => response.json());
+    return fetch(reqUrl, requestParams)
+    .then(response => response.json());
 }
 
 /**
