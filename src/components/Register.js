@@ -2,7 +2,6 @@ import React,{PureComponent} from 'react'
 import {Modal,Form, Icon, Input, Button,Radio,Checkbox,message} from 'antd'
 import BTFetch from '../utils/BTFetch'
 import BTCryptTool from '../tools/BTCryptTool'
-// import {importFile,exportFile} from '../sys_modules/BTFile'
 import './styles.less'
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
@@ -14,7 +13,8 @@ export default class IsRegister extends PureComponent{
             visible:false
         }
     }
-     handleOk(){
+    
+    handleOk(){
 
     }
 

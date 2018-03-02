@@ -1,6 +1,5 @@
 import React,{PureComponent} from 'react'
 import './styles.less'
-
 import {Link,hashHistory} from 'react-router'
 import {bindActionCreators} from 'redux'
 import * as headerActions from '../redux/actions/HeaderAction'
@@ -10,13 +9,13 @@ import BTRowMenu from '../components/BTRowMenu'
 import BTLogin from './Login'
 import IsRegister from './Register'
 import { injectIntl, FormattedMessage, defineMessages } from 'react-intl';
-
 import BTPublishAssetModal from '../containers/Profile/Asset/subviews/BTPublishAssetModal'
 import BTIcon from '../components/BTIcon'
-
 import BTPublishDemand from '../containers/Demand/subviews/PublishDemand'
 import BTFetch from '../utils/BTFetch'
 import logo from '../static/img/logo.jpg'
+import * as BTUtil from '../utils/BTUtil'
+import BTIpcRenderer from '../tools/BTIpcRenderer'
 
 class MenuLink extends PureComponent{
     constructor(props){
@@ -36,7 +35,7 @@ class BTHeader extends PureComponent{
 
         this.state = {
             visible:true,
-            isLogin:false
+            isLogin:true
         }
     }
 
@@ -138,6 +137,31 @@ class BTHeader extends PureComponent{
         )
     }
 
+    importKeyStore(){
+        console.log('importKeyStore')
+        BTUtil.importFile((keyStore)=>{
+            BTIpcRenderer.setKeyStore(keyStore)
+        })
+    }
+
+    exportKeyStore(){
+        console.log('exportKeyStore')
+        // 从本地取出keystore文件
+        BTIpcRenderer.getKeyStore((keyStore)=>{
+            BTUtil.exportFile(keyStore,'utf8','keystore.bto')
+        })
+    }
+
+    keyStoreMenu(){
+        return(
+            <Menu>
+                {/* <Menu.Item key="1"><a href="#" onClick={()=>this.importKeyStore()}>导入KeyStore</a></Menu.Item> */}
+                <Menu.Item key="1"><a href="javascript:;" className="file">导入KeyStore<input type="file" name="" id="fiels" value=""/></a></Menu.Item>
+                <Menu.Item key="2"><a href="#" onClick={()=>this.exportKeyStore()}>导出KeyStore</a></Menu.Item>
+            </Menu>
+        )
+    }
+
     render(){
         return(
             <div className="container header">
@@ -167,6 +191,7 @@ class BTHeader extends PureComponent{
                         <img src={logo} alt=""/>
                     </div>
                 </div>
+
                 <div className="loginBtnStyle">
                     <Button onClick={()=>this.handlePublishDemand()} style={{marginRight:10,background:"#1a1a1a",color:"white"}}><FormattedMessage id='Header.PublishDemand' defaultMessage="发布需求"/></Button>
                     <Button onClick={()=>this.handlePublishAsset()} style={{marginRight:10,background:"#1a1a1a",color:"white"}}>发布资产</Button>
@@ -184,6 +209,13 @@ class BTHeader extends PureComponent{
                         }
 
                     </div>
+
+                    <div>
+                        <Dropdown overlay={this.keyStoreMenu()}>
+                            <i className="iconfont icon-key" style={{fontSize:25,color:'white',marginLeft:10}}/>
+                        </Dropdown>
+                    </div>
+
                     <div style={{marginLeft:10}}>
                         <Button onClick={()=>this.setLocale()}>
                             {(this.props.locale == 'en-US') ? '中文' : 'English'}

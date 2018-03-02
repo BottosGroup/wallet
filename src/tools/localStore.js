@@ -9,3 +9,8 @@ export const getAccount = ()=>{
 export const setAccount = (accountInfo)=>{
     return localStorage.setItem(accountKey,JSON.stringify(accountInfo));
 }
+
+export const isLogin = ()=>{
+    let account_info = getAccount()
+    return !(account_info == undefined)
+}

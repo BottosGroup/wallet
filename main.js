@@ -13,8 +13,8 @@ let win
 function createWindow () {
   // 创建浏览器窗口。
   win = new BrowserWindow({
-    width: 800, 
-    height: 600,
+    width: 1920, 
+    height: 1080,
     autoHideMenuBar: true,
     fullscreenable: false,
     webPreferences: {
@@ -82,7 +82,7 @@ app.on('activate', () => {
 // 也可以拆分成几个文件，然后用 require 导入。
 
 // 文件模块
-const BTFile = require('./src/sys_modules/BTFile')
+const BTIpcMain = require('./src/sys_modules/BTIpcMain')
 
-// BTFile.getAppPath()
+
 
