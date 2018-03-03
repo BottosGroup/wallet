@@ -26,7 +26,24 @@ export default class BTAssetList extends PureComponent{
     onChange(){
 
     }
-
+    componentDidMount(){
+        var param={
+            "userName": "btd121",
+            "random": "fileName123",
+            "signatures": "0xxxx"
+        };
+        var myHeaders = new Headers();
+        myHeaders.append('Content-Type','text/plain');
+        fetch('http://10.104.21.10:8080/v2/asset/queryUploadedData',{
+            method:'POST',
+            header:myHeaders,
+            body:JSON.stringify(param)
+        })
+            .then(response=>response.json())
+            .then(res=>{
+                console.log(res)
+            })
+    }
     render(){
         return(
             <Modal visible={this.state.visible}
