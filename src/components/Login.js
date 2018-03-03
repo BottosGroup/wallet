@@ -33,19 +33,23 @@ export default class Login extends PureComponent{
     }
 
     async onHandleUnlock(){
+        let reqUrl = '/user/login'
+        BTFetch(reqUrl,'GET').then(response=>{
+            console.log(response)
+        })
 
-        let keys = await BTCryptTool.createPubPrivateKeys()
+        // let keys = await BTCryptTool.createPubPrivateKeys()
 
 
-        let privateWif = "5JJXN5fxRJfpVbTJ5HqVuuN6bodxA2uGmPFmJe29merNjePZzpN"
-        let privateKey = keys.privateKey.toString()
-        let pubKey = keys.publicKey.toString()
+        // let privateWif = "5JJXN5fxRJfpVbTJ5HqVuuN6bodxA2uGmPFmJe29merNjePZzpN"
+        // let privateKey = keys.privateKey.toString()
+        // let pubKey = keys.publicKey.toString()
 
-        if(privateWif==privateKey){
-            console.log('密钥相同')
-        }else{
-            console.log('密钥不同')
-        }
+        // if(privateWif==privateKey){
+        //     console.log('密钥相同')
+        // }else{
+        //     console.log('密钥不同')
+        // }
 
         // console.log({
         //     privateWif,
@@ -66,21 +70,21 @@ export default class Login extends PureComponent{
 
         // let sig = '2011ca1777948a32be8c1c020ea8c0a29968b2b43579c66fe8696d5045e5dd3d64517591d037d8f7e899a8cbbc4455ae22d3d2a98c75074a51d046190ad056e70c'
 
-        let signData = {
-            "ref_block_num":14802,"ref_block_prefix":3313843535,"expiration":"2018-02-26T03:54:48","scope":["usermng"],"read_scope":[],
-            "messages":[
-                {"code":"usermng","type":"userlogin",
-            "authorization":[
-                {"account":"wc1","permission":"active"}
-            ],"data":"03776331d2040000"}]
-        }
+        // let signData = {
+        //     "ref_block_num":14802,"ref_block_prefix":3313843535,"expiration":"2018-02-26T03:54:48","scope":["usermng"],"read_scope":[],
+        //     "messages":[
+        //         {"code":"usermng","type":"userlogin",
+        //     "authorization":[
+        //         {"account":"wc1","permission":"active"}
+        //     ],"data":"03776331d2040000"}]
+        // }
 
-        let prikey = '5JU71Xj9P1R7rmzD2vwjGLyjZ4XPPcrjiBPR5SVKn1opEWJz48c'
-        let btsign = ecc.sign(JSON.stringify(signData),privateWif)
-        // let btsign = ecc.sign("abc",privateWif)
-        console.log({
-            btsign
-        })
+        // let prikey = '5JU71Xj9P1R7rmzD2vwjGLyjZ4XPPcrjiBPR5SVKn1opEWJz48c'
+        // let btsign = ecc.sign(JSON.stringify(signData),privateWif)
+        // // let btsign = ecc.sign("abc",privateWif)
+        // console.log({
+        //     btsign
+        // })
 
         // console.log({
         //     btsign

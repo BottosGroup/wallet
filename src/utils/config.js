@@ -6,5 +6,8 @@ module.exports = {
     blockchain:{
         base_url:'http://10.104.14.169:8888/',
         version:'v1'
+    },
+    mock:{
+        base_url:"http://localhost:3005"
     }
 }

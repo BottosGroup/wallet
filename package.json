@@ -5,6 +5,7 @@
   "main": "main.js",
   "homepage": ".",
   "DEV": true,
+  "MOCK":true,
   "dependencies": {
     "antd": "^3.2.1",
     "buffer": "^5.1.0",

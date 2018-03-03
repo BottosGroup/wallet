@@ -1,10 +1,14 @@
 import config from './config.js'
-
+const pkg = require('../../package.json')
 export default (url,method,params,SERVER="service")=>{
     let blockchain = config.blockchain;
     let service = config.service;
+    let mock = config.mock;
     let reqUrl = ''
-    if(SERVER==='service'){
+
+    if(pkg.MOCK){
+        reqUrl = mock.base_url+url
+    }else if(SERVER==='service'){
         reqUrl = service.base_url + service.version+url
     }else{
         reqUrl = blockchain.base_url + blockchain.version
@@ -17,13 +21,13 @@ export default (url,method,params,SERVER="service")=>{
             'Content-Type': 'application/json'
         }
     };
+    
     if (methodUpStr == 'GET') {
         let str = getFetchUrl(params);
         reqUrl += str;
     }else{
         requestParams.body = JSON.stringify(params);
     }
-
     return fetch(reqUrl, requestParams)
     .then(response => response.json());
 }
