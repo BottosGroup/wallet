@@ -1,5 +1,5 @@
 exports.user_register = (ctx)=>{
     ctx.response.body = {
-        name:'yuanjunliang'
+        name:'yuanjua'
     }
 }

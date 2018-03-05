@@ -239,7 +239,7 @@ export default class BTAssetDetail extends PureComponent{
                     code: "assetmng",
                     type: "assetreg",
                     authorization: [111],
-                    data: postData
+                    data: postData,
                 }],
                 signatures:[]
             })
@@ -281,23 +281,24 @@ export default class BTAssetDetail extends PureComponent{
     componentDidMount() {
                         var myHeaders = new Headers();
                         myHeaders.append('Content-Type','text/plain');
-                        fetch("http://localhost:3003/assetDetail",{
+                        fetch("http://127.0.0.1:3008/asset/modify",{
                             method:"get",
                             header:myHeaders,
                         }).then(response=>response.json()).then(data=>{
                             var newdata = [];
-                            for(let i=0;i<data.length;i++){
+                            console.log(data.assetDetail[0].asset_name)
+                            for(let i=0;i<data.assetDetail.length;i++){
                                 newdata.push({
                                     key: i,
-                                    assetName:data[i].asset_name,
-                                    type:data[i].type,
-                                    price:data[i].price,
-                                    fileName:data[i].file_name,
-                                    fileSize:data[i].file_size,
+                                    assetName:data.assetDetail[i].asset_name,
+                                    type:data.assetDetail[i].type,
+                                    price:data.assetDetail[i].price,
+                                    fileName:data.assetDetail[i].file_name,
+                                    fileSize:data.assetDetail[i].file_size,
                                     date: "",
-                    description:data[i].description,
-                })
-            }
+                                    description:data.assetDetail[i].description,
+                            })
+                            }
             this.setState({
                 data:newdata
             })
