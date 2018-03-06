@@ -102,21 +102,21 @@ export default class BTUploadAsset extends PureComponent{
                         </Select>
                     </div>
                     {/*<div className="OriginPicture">*/}
-                        {/*<span style={{marginRight:"5px"}}>choose the files' type:</span>*/}
-                        {/*<RadioGroup onChange={(e)=>this.onChange(e)}>*/}
-                            {/*<Radio value={1} name={7}>*/}
-                                {/*<span>picture</span>*/}
-                                {/*<BTIcon type="icon-tupian" />*/}
-                            {/*</Radio>*/}
-                            {/*<Radio value={2} name={7}>*/}
-                                {/*<span>video</span>*/}
-                                {/*<BTIcon type="icon-11"/>*/}
-                            {/*</Radio>*/}
-                            {/*<Radio value={3} name={7}>*/}
-                                {/*<span>music</span>*/}
-                                {/*<BTIcon type="icon-voice"/>*/}
-                            {/*</Radio>*/}
-                        {/*</RadioGroup>*/}
+                    {/*<span style={{marginRight:"5px"}}>choose the files' type:</span>*/}
+                    {/*<RadioGroup onChange={(e)=>this.onChange(e)}>*/}
+                    {/*<Radio value={1} name={7}>*/}
+                    {/*<span>picture</span>*/}
+                    {/*<BTIcon type="icon-tupian" />*/}
+                    {/*</Radio>*/}
+                    {/*<Radio value={2} name={7}>*/}
+                    {/*<span>video</span>*/}
+                    {/*<BTIcon type="icon-11"/>*/}
+                    {/*</Radio>*/}
+                    {/*<Radio value={3} name={7}>*/}
+                    {/*<span>music</span>*/}
+                    {/*<BTIcon type="icon-voice"/>*/}
+                    {/*</Radio>*/}
+                    {/*</RadioGroup>*/}
                     {/*</div>*/}
                     <div className="description">
                         <div>
@@ -155,7 +155,7 @@ export default class BTUploadAsset extends PureComponent{
                             <Button type="submit">OK</Button>
                         </div>
                     </div>
-            </div>
+                </div>
             </div>
 
         )

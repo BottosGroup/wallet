@@ -1,4 +1,4 @@
-import * as BTFetch from './BTFetch'
+import BTFetch from './BTFetch'
 
 // 获取区块信息
 export const getBlockInfo = async()=>{
@@ -7,10 +7,10 @@ export const getBlockInfo = async()=>{
 }
 
 // 获取data信息
-export const getDataInfo = async()=>{
-    let reqUrl = '/user/GetBin'
-    let params = {
-        username:'btd352'
-    }
-    return await BTFetch(reqUrl,'POST',JSON.stringify(params))
+export const getDataInfo = async(params)=>{
+    let reqUrl = '/user/GetDataBin'
+    // let params = {
+    //     username:'btd352'
+    // }
+    return await BTFetch(reqUrl,'POST',params)
 }
