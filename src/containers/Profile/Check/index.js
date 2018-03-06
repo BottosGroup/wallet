@@ -28,11 +28,6 @@ const columns = [
                 <a href="#" style={{color:"#6d6df5"}}>Tom</a>
             </div>
     },
-    { title: 'Cancel', dataIndex: '', key: 'x', render: () =>
-            <div>
-                <a href="#" style={{backgroundColor:"black",color:"white",padding:"1px 5px",borderRadius:"3px"}}>Cancel</a>
-            </div>
-},
     { title: 'Agree', dataIndex: '', key: 'y', render: () =>
             <div>
                 <a onClick={()=>this.onClick()} href="#" style={{backgroundColor:"black",color:"white",padding:"1px 5px",borderRadius:"3px"}}>Agree</a>
@@ -69,7 +64,6 @@ export default class BTCheck extends PureComponent{
         this.state={
             agree:"",
             reject:"",
-            cancel:"",
             data:[],
         }
     }

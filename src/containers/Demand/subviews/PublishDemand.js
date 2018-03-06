@@ -126,6 +126,7 @@ export default class BTPublishDemand extends PureComponent{
                 }
             }
         }
+
         let blockInfo = await getBlockInfo(blockData);
         blockData = await getDataInfo(blockData);
         var myHeaders = new Headers();
