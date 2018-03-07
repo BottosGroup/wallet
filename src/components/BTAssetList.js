@@ -63,7 +63,7 @@ export default class BTAssetList extends PureComponent{
                             {
                                 this.state.data.map((value,index)=>{
                                         return (
-                                            <Row span={8}><Radio value={value.file_name}>{value.file_name}</Radio></Row>
+                                            <Row key={index} span={8}><Radio value={value.file_name}>{value.file_name}</Radio></Row>
                                         )
                                     })
                             }
