@@ -2,17 +2,21 @@ import React,{PureComponent} from 'react'
 import { Table, Icon } from 'antd'
 import "./style.less"
 import BTFetch from "../../../utils/BTFetch";
+import BTUnlogin from '../../../components/BTUnlogin'
+import {isLogin} from '../../../tools/localStore'
+import BTTable from '../../../components/BTTable'
+
 
 const columns = [
     { title: 'To', dataIndex: 'requireID', key: 'requireID',render:() =>
-            <div>
+            <div className="container">
                 <a href="#" style={{color:"#6d6df5"}}>Jack</a>
             </div>
     },
     { title: 'State', dataIndex: 'state', key:'state' },
     { title: 'FeatureTag', dataIndex: 'featureTag', key:'featureTag' },
     { title: 'Price', dataIndex: 'price', key: 'price',render:()=>
-            <div>
+            <div className="container">
                 <img src="http://upload.ouliu.net/i/2018012217455364b5l.png" style={{width:20,height:20,margin:5}} alt=""/>
                 <span>200</span>
             </div>
@@ -24,29 +28,29 @@ const columns = [
     },
     { title: 'SampleSize',dataIndex:'sampleSize',key:'sampleSize'},
     { title: 'From', dataIndex: 'assetID', key: 'assetID',render:() =>
-            <div>
+            <div className="container">
                 <a href="#" style={{color:"#6d6df5"}}>Tom</a>
             </div>
     },
     { title: 'Cancel', dataIndex: '', key: 'x', render: () =>
-            <div>
+            <div className="container">
                 <a href="#" style={{backgroundColor:"black",color:"white",padding:"1px 5px",borderRadius:"3px"}}>Cancel</a>
             </div>
 },
     { title: 'Agree', dataIndex: '', key: 'y', render: () =>
-            <div>
+            <div className="container">
                 <a onClick={()=>this.onClick()} href="#" style={{backgroundColor:"black",color:"white",padding:"1px 5px",borderRadius:"3px"}}>Agree</a>
             </div>
     },
     { title: 'Reject', dataIndex: '', key: 'z', render: () =>
-            <div>
+            <div className="container">
                 <a href="#" style={{backgroundColor:"black",color:"white",padding:"1px 5px",borderRadius:"3px"}}>Reject</a>
             </div>
     },
     { title: 'Date', dataIndex: 'date', key: 'date' },
 
 ];
-
+  
 const data = [];
 for (let i = 0; i < 5; ++i) {
     data.push({
@@ -71,10 +75,22 @@ export default class BTCheck extends PureComponent{
             reject:"",
             cancel:"",
             data:[],
+            isLogin:false
         }
     }
 
     componentDidMount() {
+        let isLoginState = isLogin()
+        this.setState({
+            isLogin:isLoginState
+        })
+
+        if(isLoginState){
+            this.getData()
+        } 
+    }
+
+    getData(){
         BTFetch("","post",JSON.stringify({sessionID:"lalala"})).then(data=>{
             data = {
                 code:'1',
@@ -91,15 +107,13 @@ export default class BTCheck extends PureComponent{
             console.log(error)
         })
     }
+
     render(){
-        return(
-            <div style={{width:"90%",height:"100%"}}>
-                <Table
-                    bordered
-                    columns={columns}
-                    // expandedRowRender={record => <p style={{ margin: 0 }}>{record.description}</p>}
-                    dataSource={data}
-                />
+        return (
+            <div className='container'>
+                {
+                    this.state.isLogin ? <BTTable bordered columns={columns} dataSource={data}/> : <BTUnlogin/>
+                }
             </div>
         )
     }

@@ -1,9 +1,9 @@
 import React,{PureComponent} from 'react'
-
 import BTAssetCell from './subviews/AssetCell'
 import {Pagination} from 'antd'
 import Assetlist from './subviews/Assetlist'
 import BTMyTag from '../../components/BTMyTag'
+import {isLogin} from '../../tools/localStore'
 
 const BTHeaderSearch = () => (
     <div className="searchViewStyle">
@@ -35,9 +35,18 @@ export default class BTAssets extends PureComponent{
         super(props);
         this.state={
             list:[1,2,3,4],
-            current:1
+            current:1,
+            isLogin:false
         };
     }
+
+    componentDidMount(){
+        let loginState = isLogin()
+        this.setState({
+            isLogin:loginState
+        })
+    }
+
     render(){
         return(
             <div>
@@ -45,30 +54,16 @@ export default class BTAssets extends PureComponent{
 
                 <div style={{marginTop:20}}>
                     <ul>
-                        <li><Assetlist linkto="/assets/detail"/></li>
-                        <li><Assetlist linkto="/assets/detail"/></li>
-                        <li><Assetlist linkto="/assets/detail"/></li>
-                        <li><Assetlist linkto="/assets/detail"/></li>
-                        <li><Assetlist linkto="/assets/detail"/></li>
-                        <li><Assetlist linkto="/assets/detail"/></li>
-                        <li><Assetlist linkto="/assets/detail"/></li>
-
-                        {/*<li><BTAssetCell linkto="/assets/detail"/></li>
-                        <li><BTAssetCell linkto="/assets/detail"/></li>
-                        <li><BTAssetCell linkto="/assets/detail"/></li>
-                        <li><BTAssetCell linkto="/assets/detail"/></li>
-                        <li><BTAssetCell linkto="/assets/detail"/></li>
-                        <li><BTAssetCell linkto="/assets/detail"/></li>
-                        <li><BTAssetCell linkto="/assets/detail"/></li>
-                        <li><BTAssetCell linkto="/assets/detail"/></li>
-                        <li><BTAssetCell linkto="/assets/detail"/></li>
-                        <li><BTAssetCell linkto="/assets/detail"/></li>
-                        <li><BTAssetCell linkto="/assets/detail"/></li>
-                        <li><BTAssetCell linkto="/assets/detail"/></li>
-                        <li><BTAssetCell linkto="/assets/detail"/></li>
-                        <li><BTAssetCell linkto="/assets/detail"/></li>
-                        <li><BTAssetCell linkto="/assets/detail"/></li>*/}
-
+                        <li><Assetlist isLogin={this.state.isLogin} linkto="/assets/detail"/></li>
+                        <li><Assetlist isLogin={this.state.isLogin} linkto="/assets/detail"/></li>
+                        <li><Assetlist isLogin={this.state.isLogin} linkto="/assets/detail"/></li>
+                        <li><Assetlist isLogin={this.state.isLogin} linkto="/assets/detail"/></li>
+                        <li><Assetlist isLogin={this.state.isLogin} linkto="/assets/detail"/></li>
+                        <li><Assetlist isLogin={this.state.isLogin} linkto="/assets/detail"/></li>
+                        <li><Assetlist isLogin={this.state.isLogin} linkto="/assets/detail"/></li>
+                        <li><Assetlist isLogin={this.state.isLogin} linkto="/assets/detail"/></li>
+                        <li><Assetlist isLogin={this.state.isLogin} linkto="/assets/detail"/></li>
+                        <li><Assetlist isLogin={this.state.isLogin} linkto="/assets/detail"/></li>
                     </ul>
                 </div>
 

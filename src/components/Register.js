@@ -3,6 +3,7 @@ import {Modal,Form, Icon, Input, Button,Radio,Checkbox,message} from 'antd'
 import BTFetch from '../utils/BTFetch'
 import BTCryptTool from '../tools/BTCryptTool'
 import './styles.less'
+import {setKeyStore} from '../tools/BTIpcRenderer'
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
 
@@ -34,7 +35,7 @@ export default class IsRegister extends PureComponent{
                        maskClosable='false'
                        footer={null}
         >
-            <RegistForm/>
+            <RegistForm handleCancel={()=>this.handleCancel()}/>
         </Modal>)
     }
 }
@@ -66,6 +67,10 @@ class Regist extends PureComponent{
         let role_type = fieldValues.role_type;
         let email = fieldValues.email;
         let password = fieldValues.password;
+
+        if(email==undefined){message.error('请输入邮箱'); return}
+        if(username==undefined){message.error('请输入用户名'); return}
+        if(password==undefined){message.error('请输入密码'); return}
 
         // 生成两对公私钥
         let owner_keys = await BTCryptTool.createPubPrivateKeys();
@@ -127,9 +132,10 @@ class Regist extends PureComponent{
 
         // 将两对私钥加密以后存储到本地
         let privateKeys = {
-            owner_private_key,
+            code:'0',
+            owner_private_key:owner_private_key.toString(),
             owner_private_wif,
-            active_private_key,
+            active_private_key:active_private_key.toString(),
             active_private_wif
         }
         // 对两对私钥进行加密后存储成keystore文件
@@ -138,19 +144,24 @@ class Regist extends PureComponent{
         .then(response=>{
             if(response && response.code=='0'){
                 message.success('注册成功')
-                this.setState({
-                    visible:false
-                })
-                // 将两对私钥加密以后存储到本地
-                this.exportKeystore(privateKeys,password);
+               
+                // 将两对私钥加密以后存储到user_data
+                // this.exportKeystore(privateKeys,password);
+                let privateKeyStr = JSON.stringify(privateKeys)
+                let cryptStr = BTCryptTool.aesEncrypto(privateKeyStr,password)
+                // 存储keystore文件到本地
+                setKeyStore(cryptStr)
+                // 隐藏registModel
+                this.props.handleCancel()
             }
         })
         .catch(error=>{
-            message.error('注册失败')
+            message.error('注册失败',error)
             this.setState({
                 visible:false
             })
         })
+        
     }
 
     // 将两对私钥加密后存储到本地
@@ -158,15 +169,8 @@ class Regist extends PureComponent{
         let privateKeyStr = JSON.stringify(privateKeys)
         let cryptStr = BTCryptTool.aesEncrypto(privateKeyStr,password)
         let decryStr = BTCryptTool.aesDecrypto(cryptStr.toString(),password)
-
-        // console.log({
-        //     cryptStr,
-        //     cryptStrstr:cryptStr.toString(),
-        //     decryStr
-        // })
-        // 存储keystore文件
-        // exportFile(cryptStr.toString(),"text/json;charset=utf-8",'keystore.bto')
-        // exportFile(JSON.stringify(privateKeys),"text/json;charset=utf-8",'keystore.json')
+        // 存储keystore文件到本地
+        setKeyStore(cryptStr)
     }
 
     render(){
@@ -242,7 +246,7 @@ class Regist extends PureComponent{
                         getFieldDecorator('password',{
 
                         })(
-                            <Input placeholder="请输入密码" id="error1"/>
+                            <Input placeholder="请输入密码" type="password" id="error1"/>
                         )
                     }
                 </FormItem>
