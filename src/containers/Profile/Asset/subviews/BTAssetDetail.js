@@ -1,77 +1,5 @@
-// import React,{PureComponent} from 'react'
-// import {Table,Icon} from 'antd';
-//
-//
-// const columns = [
-//     { title: 'AssetName', dataIndex: 'edit', key: 'assetName',render:() =>
-//             <div>
-//                 <span>{data[0].assetName}</span>
-//                 <a><Icon type="edit"/></a>
-//             </div>
-// },
-//     { title: 'Type', dataIndex: 'type', key: 'type',render:() =>
-//             <div>
-//                 <span>{data[0].type}</span>
-//                 <a><Icon type="edit"/></a>
-//             </div> },
-//     { title: 'Price', dataIndex: 'price', key: 'price',render:() =>
-//             <div>
-//                 <span>{data[0].price}</span>
-//                 <a><Icon type="edit"/></a>
-//             </div> },
-//     { title: 'FileName', dataIndex: 'fileName', key: 'fileName' },
-//     { title: 'FileSize', dataIndex: 'fileSize', key: 'fileSize' },
-//     { title: 'Action', dataIndex: '', key: 'x', render: () =>
-//             <ul>
-//                 <a href="#">DownLoad </a>
-//                 <a href="#">Delete</a>
-//             </ul>,
-//     },
-//     { title: 'Date', dataIndex: 'date', key: 'date'},
-// ];
-//
-// const data = [];
-// for (let i = 0; i < 5; ++i) {
-//     data.push({
-//         key: i,
-//         assetName: 'pandas',
-//         type:'数据清洗',
-//         price: '150',
-//         fileName:"pandas.zip",
-//         fileSize:"123M",
-//         date: '2018-01-15 23:12:00',
-//         description:'the pictures of pandas',
-//     });
-// }
-//
-// export default class BTAssetDetail extends PureComponent{
-//     constructor(props){
-//         super(props)
-//     }
-//
-//
-//     render(){
-//         return(
-//                 <Table
-//                     className="components-table-demo-nested"
-//                     columns={columns}
-//                     expandedRowRender={record =>
-//                         <div>
-//                             <span style={{ margin: 0 }}>
-//                                 {record.description}
-//                             </span>
-//                             <a><Icon type="edit"/></a>
-//                         </div>
-//
-//                             }
-//                     dataSource={data}
-//                 />
-//         )
-//     }
-// }
-
 import React,{PureComponent} from 'react'
-import { Table, Input, Icon, Button, Popconfirm,Menu, Dropdown, Select } from 'antd';
+import { Table, Input, Icon, Button, Popconfirm,Menu, Dropdown, Select,message } from 'antd';
 import "./styles.less"
 import BTFetch from "../../../../utils/BTFetch"
 const { Option, OptGroup } = Select;
@@ -105,45 +33,28 @@ export default class BTAssetDetail extends PureComponent{
     constructor(props) {
         super(props);
         this.columns = [
-            {title: 'assetName', dataIndex: 'assetName',
+            {title: 'AssetName', dataIndex: 'asset_name',key:'asset_name',
                 render: (text, record) => this.renderColumns(text, record, 'assetName'),
-        },
-            { title: 'Type', dataIndex: 'type', key: 'type',
-                render:() =>(
-                    <Select
-                        defaultValue="数据清洗"
-                        onChange={handleChange}
-                    >
-                            <Option value="jack">数据清洗</Option>
-                            <Option value="lucy">数据采集</Option>
-                    </Select>
-                )
-
             },
         { title: 'Price', dataIndex: 'price', key: 'price',
             render: (text, record) => this.renderColumns(text, record, 'price')
             },
-        { title: 'FileName', dataIndex: 'fileName', key: 'fileName' },
-        { title: 'FileSize', dataIndex: 'fileSize', key: 'fileSize' },
-        { title: 'Date', dataIndex: 'date', key: 'date',
+        { title: 'ExpireTime', dataIndex: 'expire_time', key: 'date',
             render: (text, record) => this.renderColumns(text, record, 'date'),
         },
         { title: 'Description', dataIndex: 'description', key: 'description',
             render: (text, record) => this.renderColumns(text, record, 'description'),
         },
-        { title: 'Delete', dataIndex: 'delete',
+        { title: 'Delete', dataIndex: 'delete',key:'delete',
             render: (text, record) => {
                 return (
-                    // this.state.dataSource.length > 1 ?
-                    //     (
-                            <Popconfirm title="Sure to delete?" onConfirm={() => this.onDelete(record.key)}>
-                                <a href="#" style={{color:"#6d6df5"}}>Delete</a>
-                            </Popconfirm>
-                        // ) : null
+                        <Popconfirm title="Sure to delete?" onConfirm={() => this.onDelete(record.key)}>
+                            <a href="#" style={{color:"#6d6df5"}}>Delete</a>
+                        </Popconfirm>
                 );
             },
         },
-        { title: 'operation', dataIndex: 'operation',
+        { title: 'operation', dataIndex: 'operation',key:"operation",
                 render: (text, record) => {
                     const { editable } = record;
                     return (
@@ -151,35 +62,41 @@ export default class BTAssetDetail extends PureComponent{
                             {
                                 editable ?
                                     <span>
-                  <a onClick={() => this.save(record.key)}>Save</a>
-                  <Popconfirm title="Sure to cancel?" onConfirm={() => this.cancel(record.key)}>
+                  <a onClick={() => this.save(record.asset_id)}>Save</a>
+                  <Popconfirm title="Sure to cancel?" onConfirm={() => this.cancel(record.asset_id)}>
                     <a>Cancel</a>
                   </Popconfirm>
                 </span>
-                                    : <a onClick={() => this.edit(record.key)}>Edit</a>
+                                    : <a onClick={() => this.edit(record.asset_id)}>Edit</a>
                             }
                         </div>
                     );
                 },
             }];
-        const data = [];
-        this.cacheData = data.map(item => ({ item }));
-        for (let i = 0; i < 7; ++i) {
-            data.push({
-                key: i,
-                assetName: 'pandas',
-                type:'数据清洗',
-                price: '150',
-                fileName:"pandas.zip",
-                fileSize:"123M",
-                date: '2018-01-15 23:12:00',
-                description:'the pictures of pandas',
-            });
-        }
+
         this.state = {
-            data,
+            data:[],
         }
     }
+
+    componentDidMount(){
+        // 请求查询数据
+        this.onHeaderRefresh()
+    }
+
+    onHeaderRefresh(){
+        let reqUrl = '/asset/buy/query'
+        BTFetch(reqUrl,'POST').then(response=>{
+            if(response && response.code=='0'){
+                let data = response.data
+                this.setState({data})
+            }else{
+                message.error('查询数据失败')
+            }
+        })
+    }
+
+
     onDelete(key){
         const dataSource = [...this.state.data];
         this.setState({ data: dataSource.filter(item => item.key !== key) });
@@ -193,7 +110,8 @@ export default class BTAssetDetail extends PureComponent{
             <EditableCell
                 editable={record.editable}
                 value={text}
-                onChange={value => this.handleChange(value, record.key, column)}
+                key={record.asset_id}
+                onChange={value => this.handleChange(value, record.asset_id, column)}
             />
         );
     }

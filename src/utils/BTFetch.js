@@ -1,6 +1,11 @@
 import config from './config.js'
 const pkg = require('../../package.json')
-export default (url,method,params,SERVER="service")=>{
+
+
+export default (url,method,params,options={
+    full_path:false,
+    service:'service'
+})=>{
     let blockchain = config.blockchain;
     let service = config.service;
     let mock = config.mock;
@@ -8,11 +13,14 @@ export default (url,method,params,SERVER="service")=>{
 
     if(pkg.MOCK){
         reqUrl = mock.base_url+url
-    }else if(SERVER==='service'){
+    }else if(options.service==='service'){
         reqUrl = service.base_url + service.version+url
     }else{
         reqUrl = blockchain.base_url + blockchain.version
     }
+
+    // 如果自己写的全路径，直接用全路径
+    if(options.full_path) reqUrl = url;
 
     let methodUpStr = method.toUpperCase(); // 统一转换成大写
     let requestParams = {
