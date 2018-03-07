@@ -3,15 +3,17 @@ import {Popconfirm,Table, Upload, Icon, message} from 'antd';
 import "./styles.less"
 import BTFetch from "../../../../utils/BTFetch"
 import BTCryptTool from '../../../../tools/BTCryptTool'
+import {getBlockInfo,getDataInfo} from '../../../../utils/BTCommonApi'
+
 const Dragger = Upload.Dragger;
 // const md5File=require('md5-file');
 // const md5File = require('md5-file/promise')
-const fs=require('fs')
+// const fs=require('fs');
+const callback_data = ''
 const props = {
     customRequest(info){
         //生成文件存储路径url
         const file=info.file;
-
         var param={
             "userName": "btd121",
             "fileName": file.name,
@@ -33,16 +35,14 @@ const props = {
             .then(res=>{
                 console.log(res)
                 if(res.code==1){
-                    var url=res.data;
+                    let url=res.data;
                     up_ajax(url);
-                    // console.log(url)
                 }
             }).catch(error=>{
             console.log(error)
         })
         //上传到存储路径中
         const status = info.file.status;
-        // console.log(BTCryptTool.sha256(info.file),BTCryptTool.sha256_test(111))
         function up_ajax(url){
             var myHeaders=new Headers();
             myHeaders.append('Content-Type','text/plain; charset=utf-8');
@@ -86,7 +86,6 @@ const props = {
                     console.log(result)
                     if(result.msg=='OK'){
                         inquire_data();
-                        lian();
                     }
                 }).catch(error=>{
                 console.log(error)
@@ -107,13 +106,13 @@ const props = {
                 "args":{
                     "file_hash":"filehashtest",
                     "basic_info":{
-                        "user_name":"wc1",
+                        "user_name":"btd121",
                         "session_id":"sessidtest",
-                        "file_size":100,
-                        "file_name":"nametest",
+                        "file_size":file.size,
+                        "file_name":file.name,
                         "file_policy":"policytest",
-                        "file_number":200,
-                        "signature":"sigtest"
+                        "file_number":1,
+                        "signature":"0xxxxx"
                     }
                 }
             }
@@ -124,35 +123,64 @@ const props = {
             })
                 .then(response=>response.json())
                 .then(res=>{
-                    console.log(res)
+                    console.log(res);
+                    let binargs=res.binargs;
+                    lian(binargs);
                 })
         }
         // 注册到链上
-        function lian(){
+        async function lian(binargs){
+            let blockInfo = (await getBlockInfo()).data;
             var data={
-                "ref_block_num": 588,
-                "ref_block_prefix": 540353353,
-                "expiration": "2018-03-02T07:01:12",
+                "ref_block_num": blockInfo.ref_block_num,
+                "ref_block_prefix": blockInfo.ref_block_prefix,
+                "expiration": blockInfo.expiration,
                 "scope": ["datafilemng"],
                 "read_scope": [],
                 "messages": [{
                     "code": "datafilemng",
                     "type": "datafilereg",
                     "authorization": [],
-                    "data": "0c66696c656861736874657374037763310a736573736964746573746400000000000000086e616d65746573740a706f6c69637974657374c8000000000000000773696774657374"
+                    "data": binargs
                 }],
                 "signatures": []
             }
+            console.log(data)
             fetch('http://10.104.21.10:8080/v2/asset/registerFile',{
                 method:'POST',
                 header:myHeaders,
                 body:JSON.stringify(data)
             }).then(response=>response.json())
                 .then(res=>{
+                    if(res.code==1){
+                        alert(`注册成功！！！`);
+                        var data={
+                            "userName": "btd121",
+                            "random": Math.ceil(Math.random()*100),
+                            "signatures": "0xxxx"
+                        };
+                        fetch('http://10.104.21.10:8080/v2/asset/queryUploadedData',{
+                            method:'POST',
+                            header:myHeaders,
+                            body:JSON.stringify(data)
+                        })
+                            .then(response=>response.json())
+                            .then(res=>{
+                                if(res.code=='1'){
+                                    let _data=JSON.parse(res.data);
+                                    console.log(_data);
+                                    if(_data == null){
+                                        return
+                                    }
+                                    // callback_data = _data;
+                                    // return callback_data
+                                }
+
+                            })
+                    }
                     console.log(res)
                 })
         }
-
     },
     onChange(info) {
         const status = info.file.status;
@@ -172,91 +200,81 @@ const props = {
 export default class BTMyAssetSet extends PureComponent{
     constructor(props){
         super(props);
-
-        this.columns = [
-            { title: 'FileName', dataIndex: 'fileName', key: 'fileName' },
-            { title: 'FileSize', dataIndex: 'fileSize', key: 'fileSize' },
-            { title: 'sampleName', dataIndex: 'sampleName', key: 'sampleName' },
-            { title: 'sampleSize', dataIndex: 'sampleSize', key: 'sampleSize' },
-            { title: 'Date', dataIndex: 'date', key: 'date' },
-            { title: "Download", dataIndex: '', key: 'x', render: () =>
-                    <a>
-                        <Icon type="download" style={{color:"black",fontWeight:900}}/>
-                    </a>
-            },
-            { title: 'Delete', dataIndex: 'delete',
-                render: (text, record) => {
-                    return (
-                        // this.state.dataSource.length > 1 ?
-                        //     (
-                        <Popconfirm title="Sure to delete?" onConfirm={() => this.onDelete(record.key)}>
-                            <a href="#" style={{color:"#6d6df5"}}>Delete</a>
-                        </Popconfirm>
-                        // ) : null
-                    );
-                },
-            },
-        ];
-        // const data = [];
-        // for (let i = 0; i < 7; ++i) {
-        //     data.push({
-        //         key: i,
-        //         fileName:"pandas.zip",
-        //         fileSize:"123M",
-        //         sampleName:"samples.zip",
-        //         sampleSize:"3M",
-        //         date: '2018-01-15 23:12:00',
-        //     });
-        // }
-
         this.state = {
-            data:'',
+            data:''||callback_data,
             none_hash:''
         }
-    }
+    };
+        columns(data) {
+            return [
+                {title: 'FileName', dataIndex: 'file_name', key: 'fileName'},
+                {title: 'FileSize', dataIndex: 'file_size', key: 'fileSize'},
+                {title: 'sampleName', dataIndex: 'sampleName', key: 'sampleName'},
+                {title: 'sampleSize', dataIndex: 'sampleSize', key: 'sampleSize'},
+                {title: 'Date', dataIndex: 'date', key: 'date'},
+                {
+                    title: "Download", dataIndex: 'download', key: 'x', render: (sample_href) =>
+                        <a href={sample_href}>
+                            <Icon type="download" style={{color: "black", fontWeight: 900}}/>
+                        </a>
+                },
+                {
+                    title: 'Delete', dataIndex: 'delete',
+                    render: (text, record) => {
+                        return (
+                            <Popconfirm title="Sure to delete?" onConfirm={() => this.onDelete(record.key)}>
+                                <a href="#" style={{color: "#6d6df5"}}>Delete</a>
+                            </Popconfirm>
+                        );
+                    },
+                },
+            ];
+        }
+
+
+
     onDelete(key){
         const data = [...this.state.data];
         this.setState({ data: data.filter(item => item.key !== key) });
     }
     componentDidMount() {
+        var getUrl=[];
+        var param={
+            'userName':'btd121',
+            'fileName':'test.zip'
+        };
         var myHeaders = new Headers();
         myHeaders.append('Content-Type','text/plain');
-        var data={
-            "userName": "btd121",
-            "random": Math.ceil(Math.random()*100),
-            "signatures": "0xxxx"
-        };
-        fetch('http://10.104.21.10:8080/v2/asset/queryUploadedData',{
-            method:'POST',
-            header:myHeaders,
-            body:JSON.stringify(data)
-        })
-            .then(response=>response.json())
-            .then(res=>{
-                if(res.code=='1'){
-                    var data=JSON.parse(res.data);
-                    console.log(data);
-                    var newdata=[];
-                    for(let i=0;i<data.length;i++){
-                        newdata.push({
-                            key:i,
-                            fileName:data[i].file_name,
-                            fileSize:data[i].file_size,
-                            sampleName:"",
-                            sampleSize:"",
-                            data:''
+            var data={
+                "userName": "btd121",
+                "random": Math.ceil(Math.random()*100),
+                "signatures": "0xxxx"
+            };
+            fetch('http://10.104.21.10:8080/v2/asset/queryUploadedData',{
+                method:'POST',
+                header:myHeaders,
+                body:JSON.stringify(data)
+            })
+                .then(response=>response.json())
+                .then(res=>{
+                    if(res.code=='1'){
+                        let data=JSON.parse(res.data);
+                        console.log(data);
+                        if(data == null){
+                            return
+                        }
+                        this.setState({
+                            data:data
                         })
                     }
-                    this.setState({
-                        data:newdata
-                    })
-                    debugger;
-                }
-            })
+                    console.log(this.state.data)
+                })
+
+
     }
     render(){
         const { data } = this.state;
-        const columns = this.columns;
+        const columns = this.columns(data);
         return(
             <div className="set">
                 <Dragger {...props}>
