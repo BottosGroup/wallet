@@ -29,7 +29,7 @@ export default (url,method,params,options={
             'Content-Type': 'application/json'
         }
     };
-    
+
     if (methodUpStr == 'GET') {
         let str = getFetchUrl(params);
         reqUrl += str;
@@ -37,7 +37,7 @@ export default (url,method,params,options={
         requestParams.body = JSON.stringify(params);
     }
     return fetch(reqUrl, requestParams)
-    .then(response => response.json());
+        .then(response => response.json());
 }
 
 /**
@@ -55,28 +55,28 @@ const getFetchUrl = (params)=>{
     }
     return str;
 }
-  
-  
-  /**
-   * post方式ContentType:urlencode 时的body参数
-   * @param params
-   * @returns {string}
-   */
-  const getUrlencode = (params)=>{
-      let str = '';
-      if (typeof params === 'object' && params) {
-          for (let key in params) {
-              let paramKeyStr = ''
-               if(typeof params[key] ==='object'){
-                   paramKeyStr = getUrlencode(params[key]);
-              }else {
-                   paramKeyStr = params[key];
-               }
-              str += key + '=' + paramKeyStr + '&';
-          }
-          
-      }
-      return str;
-  }
+
+
+/**
+ * post方式ContentType:urlencode 时的body参数
+ * @param params
+ * @returns {string}
+ */
+const getUrlencode = (params)=>{
+    let str = '';
+    if (typeof params === 'object' && params) {
+        for (let key in params) {
+            let paramKeyStr = ''
+            if(typeof params[key] ==='object'){
+                paramKeyStr = getUrlencode(params[key]);
+            }else {
+                paramKeyStr = params[key];
+            }
+            str += key + '=' + paramKeyStr + '&';
+        }
+
+    }
+    return str;
+}
   
   
