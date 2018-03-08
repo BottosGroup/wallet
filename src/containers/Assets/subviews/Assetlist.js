@@ -24,11 +24,9 @@ export default class Assetlist extends PureComponent{
     };
     async buy(){
         //获取区块信息
-        alert(1)
         let block=(await getBlockInfo()).data;
-        console.log(this.state.data);
+        console.log(this.state.data,block);
         //获取data信息
-         let _data=''
          let data={
              "code":"datadealmng",
              "action":"datapurchase",
@@ -50,7 +48,7 @@ export default class Assetlist extends PureComponent{
                  "ref_block_prefix": block.ref_block_prefix,
                  "expiration": block.expiration,
                  "scope": ["assetmng",
-                     "buyertest",
+                     "btd121",
                      "datadealmng",
                      "saleertest"],
                  "read_scope": [],
@@ -61,23 +59,25 @@ export default class Assetlist extends PureComponent{
                      "data": getDataBin
                  }],
                  "signatures": []
-             }
-
-
-        BTFetch('http://10.104.20.80:8080/v2/exchange/consumer_buy','post',param,{
+             };
+        BTFetch('http://10.104.21.10:8080/v2/exchange/consumerBuy','post',param,{
             full_path:true
         }).then(res=>{
             console.log(res);
+            if(res.code == 1){
+                alert('ConsumerBuy Successful!');
+            }else{
+                alert('ConsumerBuy Failed!');
+            }
         })
     }
     render(){
-        // console.log(this.props.list)
-        let data=this.state.data;
-        console.log(data)
-        let linkto={
+        let data = this.state.data;
+        console.log(data);
+        let linkto = {
             pathname:'/assets/detail',
             query:data,
-        }
+        };
         return <div className='list'>
             {/*<BTAssetList ref={(ref)=>this.assetListModal = ref}/>*/}
             <div className="img">
