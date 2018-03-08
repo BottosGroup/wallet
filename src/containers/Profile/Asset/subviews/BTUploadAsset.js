@@ -157,42 +157,79 @@ export default class BTUploadAsset extends PureComponent{
         let myHeaders = new Headers();
         myHeaders.append('Content-Type','text/plain');
         let filename={
-            userame:'btd121',
+            userName:'btd121',
             fileName:this.state.getFileName
         };
         let filename1={
-            userame:'btd121',
+            userName:'btd121',
             fileName:this.state.getFileNameTemp
         };
         console.log(filename,filename1)
-        let getExampleUrl='';
+        // let getExampleUrl='';
         //获取样例文件和真实文件storage_path
 
         let reqUrl = 'http://10.104.21.10:8080/v2/asset/getDownLoadURL';
-        let params = JSON.stringify(filename); // rel 文件
-        let params1 = JSON.stringify(filename1); //example文件
-        BTFetch(reqUrl,'POST',params,{
+        let params = filename; // rel 文件
+        let params1 = filename1; //example文件
+        /*BTFetch(reqUrl,'POST',params,{
             full_path:true,
         }).then(response=>{
             console.log(response);
-            if(data.code==1){
+            if(response.code==1){
                 this.setState({
-                    getRealUrl:data.data,
+                    getRealUrl:response.data,
                 })
             }
         });
+
         BTFetch(reqUrl,'POST',params1,{
             full_path:true
         }).then(repsonse=>{
-            if(data.code==1){
+            if(response.code==1){
                 this.setState({
-                    getExampleUrl:data.data,
+                    getExampleUrl:response.data,
                 })
             }
             console.log({
-                repsonse
+                response
             })
-        });
+        });*/
+            //测试数据url
+        fetch('http://10.104.21.10:8080/v2/asset/getDownLoadURL',{
+            method:'POST',
+            header:myHeaders,
+            body:JSON.stringify(params)
+        })
+            .then(response=>response.json())
+            .then(response=>{
+                if(response.code==1){
+                    this.setState({
+                        getRealUrl:response.data,
+                    })
+                }
+                console.log(response)
+
+            }).catch(error=>{
+                console.log(error)
+             });
+        //
+        fetch('http://10.104.21.10:8080/v2/asset/getDownLoadURL',{
+            method:'POST',
+            header:myHeaders,
+            body:JSON.stringify(params1)
+        })
+            .then(response=>response.json())
+            .then(response=>{
+                if(response.code==1){
+                    this.setState({
+                        getExampleUrl:response.data,
+                    });
+                    console.log(response)
+                }
+            })
+             .catch(error=>{
+                console.log(error)
+             });
 
         let blockInfo = (await getBlockInfo()).data;
         let data={
@@ -204,9 +241,10 @@ export default class BTUploadAsset extends PureComponent{
                     "user_name": "btd121",
                     "session_id": "sessidtestwc2",
                     "asset_name": this.state.title,
-                    "feature_tag": this.state.dataAssetType,
-                    // "feature_tag2": this.state.tag2,
-                    // "feature_tag3": this.state.tag3,
+                    "asset_type": this.state.dataAssetType,
+                    "feature_tag1": this.state.tag1,
+                    "feature_tag2": this.state.tag2,
+                    "feature_tag3": this.state.tag3,
                     "sample_path": this.state.getExampleUrl,
                     "sample_hash": "samplehasttest",
                     "storage_path": this.state.getRealUrl,
@@ -242,10 +280,10 @@ export default class BTUploadAsset extends PureComponent{
         BTFetch('http://10.104.21.10:8080/v2/asset/register','POST',block,{
             full_path:true
         }).then(repsonse=>{
-            if(data.code==1){
+            if(repsonse.code==1){
                 alert(`注册资产成功`)
             }
-            console.log(repsonse)
+            console.log(repsonse);
             this.setState({
                 data:repsonse.data
             })

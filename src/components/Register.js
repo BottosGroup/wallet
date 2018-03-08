@@ -142,6 +142,10 @@ class Regist extends PureComponent{
         let reqUrl = '/user/register'
         BTFetch(reqUrl,'POST',params)
         .then(response=>{
+            console.log({
+                response:response,
+                params:params
+            })
             if(response && response.code=='0'){
                 message.success('注册成功')
                
