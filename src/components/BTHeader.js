@@ -4,7 +4,7 @@ import {Link,hashHistory} from 'react-router'
 import {bindActionCreators} from 'redux'
 import * as headerActions from '../redux/actions/HeaderAction'
 import {connect} from 'react-redux'
-import {Button,Modal,Menu, Dropdown, Icon} from 'antd'
+import {Button,Modal,Menu, Dropdown, Icon,message} from 'antd'
 import BTRowMenu from '../components/BTRowMenu'
 import BTLogin from './Login'
 import IsRegister from './Register'
@@ -14,8 +14,9 @@ import BTIcon from '../components/BTIcon'
 import BTPublishDemand from '../containers/Demand/subviews/PublishDemand'
 import BTFetch from '../utils/BTFetch'
 import logo from '../static/img/logo.jpg'
-import * as BTUtil from '../utils/BTUtil'
+import {importFile,exportFile} from '../utils/BTUtil'
 import BTIpcRenderer from '../tools/BTIpcRenderer'
+import {deleteAccount,isLogin} from '../tools/localStore'
 
 class MenuLink extends PureComponent{
     constructor(props){
@@ -42,11 +43,17 @@ class BTHeader extends PureComponent{
     // 设置本地化语言
     setLocale(){
         this.props.setLocale();
+        // 主动刷新当前页面
+        window.location.reload()
     }
 
     componentDidMount(){
-        this.hidLoginView()
+        let loginState = isLogin()
+        this.setState({
+            isLogin:loginState
+        })
     }
+
 
     onLoginHandler(){
         this.showLoginView()
@@ -102,14 +109,19 @@ class BTHeader extends PureComponent{
         this.setState({
             isLogin:isLogin
         })
-        console.log({
-            isLogin
-        })
     }
 
     logout(){
-        console.log('logout')
-        this.setState({isLogin:false})
+        let url = '/user/logout'
+        BTFetch(url,'POST').then(response=>{
+            if(response && response.code=='0'){
+                deleteAccount()
+                this.setState({isLogin:false})
+                message.success('退出登录成功')
+            }else{
+                message.error('退出登录失败')
+            }
+        })
     }
 
     menu(){
@@ -138,8 +150,7 @@ class BTHeader extends PureComponent{
     }
 
     importKeyStore(){
-        console.log('importKeyStore')
-        BTUtil.importFile((keyStore)=>{
+        importFile((keyStore)=>{
             BTIpcRenderer.setKeyStore(keyStore)
         })
     }
@@ -148,19 +159,19 @@ class BTHeader extends PureComponent{
         console.log('exportKeyStore')
         // 从本地取出keystore文件
         BTIpcRenderer.getKeyStore((keyStore)=>{
-            BTUtil.exportFile(keyStore,'utf8','keystore.bto')
+            exportFile(keyStore,'utf8','keystore.bto')
         })
     }
 
     keyStoreMenu(){
         return(
             <Menu>
-                {/* <Menu.Item key="1"><a href="#" onClick={()=>this.importKeyStore()}>导入KeyStore</a></Menu.Item> */}
-                <Menu.Item key="1"><a href="javascript:;" className="file">导入KeyStore<input type="file" name="" id="fiels" value=""/></a></Menu.Item>
+                <Menu.Item key="1"><a href="javascript:;" className="file">导入KeyStore<input onChange={()=>this.importKeyStore()} type="file" name="" id="files" value=""/></a></Menu.Item>
                 <Menu.Item key="2"><a href="#" onClick={()=>this.exportKeyStore()}>导出KeyStore</a></Menu.Item>
             </Menu>
         )
     }
+
 
     render(){
         return(
@@ -172,7 +183,6 @@ class BTHeader extends PureComponent{
                 <BTLogin ref={(ref)=>this.isLoginShow = ref} onHandleLogin={(isLogin)=>this.isLogin(isLogin)}/>
 
                 <IsRegister ref={(ref)=>this.isRegisterShow = ref}/>
-
                 <Modal
                     title="Basic Modal"
                     visible={this.props.headerState.isShow}
@@ -187,7 +197,6 @@ class BTHeader extends PureComponent{
 
                 <div className="logoMenuStyle">
                     <div className="logoStyle">
-                        {/* <img src="/static/img/logo.jpg"/> */}
                         <img src={logo} alt=""/>
                     </div>
                 </div>

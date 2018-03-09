@@ -2,6 +2,10 @@ import React,{PureComponent} from 'react'
 import { Table, Icon } from 'antd'
 import "./style.less"
 import BTFetch from "../../../utils/BTFetch";
+import BTUnlogin from '../../../components/BTUnlogin'
+import {isLogin} from '../../../tools/localStore'
+import BTTable from '../../../components/BTTable'
+
 
 const columns = [
     { title: 'asset_id', dataIndex: 'asset_id', key: 'asset_id'},

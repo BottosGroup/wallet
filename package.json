@@ -13,6 +13,7 @@
     "eccrypto": "^1.0.3",
     "electron-log": "^2.2.14",
     "eosjs-ecc": "^2.0.1",
+    "event-emitter": "^0.3.5",
     "react": "^16.2.0",
     "react-amap": "^1.2.0",
     "react-dom": "^16.2.0",
@@ -29,7 +30,8 @@
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject",
     "electron-start": "electron .",
-    "electron-package": "electron-packager . app --darwin --out packageApp --arch=x64 --overwrite --ignore=node_modulesls --electron-version=1.8.2",
+    "electron-package": "electron-packager . app --platform=darwin --out packageApp --arch=x64 --overwrite --ignore=node_modulesls --electron-version=1.8.2",
+    "electron-package-win": "electron-packager . app --all --out packageApp --arch=x64 --overwrite --ignore=node_modulesls --icon=./electron_pack/icon.png --appCopyright=bottos --appVersion=2.0 --buildVersion=2.0  --electron-version=1.8.2",
     "mock": "node ./mock/server.js"
   },
   "devDependencies": {

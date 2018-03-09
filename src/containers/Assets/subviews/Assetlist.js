@@ -27,39 +27,39 @@ export default class Assetlist extends PureComponent{
         let block=(await getBlockInfo()).data;
         console.log(this.state.data,block);
         //获取data信息
-         let data={
-             "code":"datadealmng",
-             "action":"datapurchase",
-             "args":{
-                 "data_deal_id":"dealidtest",
-                 "basic_info":{
-                     "user_name":"btd121",
-                     "session_id":"sessidtest",
-                     "asset_id":this.state.data.asset_id,
-                     "random_num":Math.ceil(Math.random()*100),
-                     "signature":"0xxxxxxxx"
-                 }
-             }
-         };
-         let getDataBin=(await getDataInfo(data)).data.bin;
-         console.log(getDataBin)
-         let param={
-                 "ref_block_num": block.ref_block_num,
-                 "ref_block_prefix": block.ref_block_prefix,
-                 "expiration": block.expiration,
-                 "scope": ["assetmng",
-                     "btd121",
-                     "datadealmng",
-                     "saleertest"],
-                 "read_scope": [],
-                 "messages": [{
-                     "code": "datadealmng",
-                     "type": "datapurchase",
-                     "authorization": [],
-                     "data": getDataBin
-                 }],
-                 "signatures": []
-             };
+        let data={
+            "code":"datadealmng",
+            "action":"datapurchase",
+            "args":{
+                "data_deal_id":"dealidtest",
+                "basic_info":{
+                    "user_name":"btd121",
+                    "session_id":"sessidtest",
+                    "asset_id":this.state.data.asset_id,
+                    "random_num":Math.ceil(Math.random()*100),
+                    "signature":"0xxxxxxxx"
+                }
+            }
+        };
+        let getDataBin=(await getDataInfo(data)).data.bin;
+        console.log(getDataBin)
+        let param={
+            "ref_block_num": block.ref_block_num,
+            "ref_block_prefix": block.ref_block_prefix,
+            "expiration": block.expiration,
+            "scope": ["assetmng",
+                "btd121",
+                "datadealmng",
+                "saleertest"],
+            "read_scope": [],
+            "messages": [{
+                "code": "datadealmng",
+                "type": "datapurchase",
+                "authorization": [],
+                "data": getDataBin
+            }],
+            "signatures": []
+        };
         BTFetch('http://10.104.21.10:8080/v2/exchange/consumerBuy','post',param,{
             full_path:true
         }).then(res=>{
@@ -89,20 +89,20 @@ export default class Assetlist extends PureComponent{
                     <h4><Link to={linkto}>{data.asset_name}</Link></h4>
                     <p>发布人：{data.username}</p>
                 </div>
-               <div className="tag">
-                   <span>{data.feature_tag}</span>
-                   {/*<span>数据挖掘</span>*/}
-                   {/*<span>表情</span>*/}
-                   {/*<span>微笑</span>*/}
-               </div>
+                <div className="tag">
+                    <span>{data.feature_tag}</span>
+                    {/*<span>数据挖掘</span>*/}
+                    {/*<span>表情</span>*/}
+                    {/*<span>微笑</span>*/}
+                </div>
                 <div className="font">
                     {data.description}
 
                 </div>
                 {/*<ul className="ant-list-item-action infomation" style={{marginLeft:0}}>*/}
-                    {/*<li><IconText type="star-o" text="156" /></li>*/}
-                    {/*<li><IconText type="like-o" text="156" /></li>*/}
-                    {/*<li><IconText type="message" text="2" /></li>*/}
+                {/*<li><IconText type="star-o" text="156" /></li>*/}
+                {/*<li><IconText type="like-o" text="156" /></li>*/}
+                {/*<li><IconText type="message" text="2" /></li>*/}
                 {/*</ul>*/}
             </div>
             <div className="down">

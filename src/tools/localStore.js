@@ -10,6 +10,10 @@ export const setAccount = (accountInfo)=>{
     return localStorage.setItem(accountKey,JSON.stringify(accountInfo));
 }
 
+export const deleteAccount = ()=>{
+    return localStorage.removeItem(accountKey)
+}
+
 export const isLogin = ()=>{
     let account_info = getAccount()
     return !(account_info == undefined)

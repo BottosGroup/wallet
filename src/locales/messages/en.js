@@ -8,9 +8,10 @@ module.exports = {
     "Menu.Check":"Check",
     "Menu.Wallet":"Wallet",
 
-
     "Header.PublishAsset":"PublishAsset",
     "Header.PublishDemand":"PublishDemand",
+    "Header.SignIn":"SignIn",
+    "Header.SignUp":"SignUp",
 
     "Dashboard.TransactionID":"TransactionID"
 }

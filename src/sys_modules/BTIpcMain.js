@@ -6,19 +6,16 @@ const appPath = app.getAppPath();
 ipcMain.on('get-key-store',(event,args)=>{
     let keyStorePath = appPath + '/user_data/keystore.bto'
     fs.readFile(keyStorePath,'utf8',(error,result)=>{
-        let keyStoreObj = JSON.parse(result);
-        event.sender.send('get-key-store-reply',keyStoreObj)
+        // let keyStoreObj = JSON.parse(result);
+        event.sender.send('get-key-store-reply',result)
     })
 })
 
 ipcMain.on('save-key-store',(event,params)=>{
+    let keyStoreStr = JSON.stringify(params)
     let keyStorePath = appPath + '/user_data/keystore.bto'
-    fs.writeFile(keyStorePath,params,(error,response)=>{
-        // console.log('save-key-store success')
-        // console.log({
-        //     error,
-        //     response
-        // })
+    fs.writeFile(keyStorePath,keyStoreStr,(error,response)=>{
+        console.log('save-key-store success')
     })
 })
 

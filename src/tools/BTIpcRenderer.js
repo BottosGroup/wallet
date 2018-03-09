@@ -4,7 +4,7 @@ const ipcRenderer = electron.ipcRenderer;
 
 const GET_KEY_STORE = 'get-key-store';
 const GET_KEY_STORE_REPLY = 'get-key-store-reply'
-const SAVE_KEY_STORE = 'save-key-stor'
+const SAVE_KEY_STORE = 'save-key-store'
 
 exports.getKeyStore = (callback)=>{
     ipcRenderer.send(GET_KEY_STORE)
@@ -14,5 +14,5 @@ exports.getKeyStore = (callback)=>{
 }
 
 exports.setKeyStore = (params)=>{
-    ipcRenderer.send(SAVE_KEY_STORE,JSON.stringify(params))
+    ipcRenderer.send(SAVE_KEY_STORE,params)
 }
