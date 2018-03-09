@@ -4,7 +4,40 @@ import BTShopListCell from './subviews/BTShopListCell'
 
 import {Popconfirm,Checkbox,Row,Col,Button,Table } from 'antd';
 const CheckboxGroup = Checkbox.Group;
-
+const data=[
+    {
+        title:'test1',
+        price:10,
+        fileName:'搞笑图片',
+        fileSize:12,
+        data:122,
+        from:'32fsajlfjds'
+    },
+    {
+        title:'test2',
+        price:11,
+        fileName:'搞笑图片',
+        fileSize:12,
+        data:122,
+        from:'32fsajlfjds'
+    },
+    {
+        title:'test3',
+        price:12,
+        fileName:'搞笑图片',
+        fileSize:12,
+        data:122,
+        from:'32fsajlfjds'
+    },
+    {
+        title:'test4',
+        price:13,
+        fileName:'搞笑图片',
+        fileSize:12,
+        data:122,
+        from:'32fsajlfjds'
+    }
+]
 
 
 
@@ -12,7 +45,12 @@ const CheckboxGroup = Checkbox.Group;
 export default class BTShopCart extends PureComponent{
     constructor(props){
         super(props)
-        this.columns = [
+        this.state={
+            data:data,
+        }
+    };
+    columns(data){
+        return [
             { title: 'title', dataIndex: 'title', key: 'title' },
             { title: 'price', dataIndex: 'price', key: 'price' },
             { title: 'fileName', dataIndex: 'fileName', key: 'fileName' },
@@ -33,30 +71,7 @@ export default class BTShopCart extends PureComponent{
             },
 
         ];
-
-        const data = [];
-        for (let i = 0; i < 4; i++) {
-            data.push({
-                key: i,
-                title:"pandas",
-                price: '150',
-                fileName:"pandas.zip",
-                fileSize:"122M",
-                date: '2018-01-15 23:12:00',
-                from:"Jack",
-            });
-        }
-
-        this.state = {
-            data,
-            count:7,
-            filterMultiple:false ,
-            indeterminate: true,
-            checkAll: false,
-            selectedRowKeys: []
-        }
     }
-
     onSelectChange(selectedRowKeys){
         console.log('selectedRowKeys changed: ', selectedRowKeys);
         this.setState({ selectedRowKeys });
@@ -71,7 +86,7 @@ export default class BTShopCart extends PureComponent{
     }
     render(){
         const { data } = this.state;
-        const columns = this.columns;
+        const columns = this.columns(data);
         const { selectedRowKeys } = this.state;
         const rowSelection = {
         selectedRowKeys,
