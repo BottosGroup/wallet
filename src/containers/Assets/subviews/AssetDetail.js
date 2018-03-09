@@ -27,7 +27,7 @@ export default class BTAssetDetail extends PureComponent{
             "args":{
                 "data_deal_id":"dealidtest",
                 "basic_info":{
-                    "user_name":"btd121",
+                    "user_name":"12",
                     "session_id":"sessidtest",
                     "asset_id":this.state.data.asset_id,
                     "random_num":Math.ceil(Math.random()*100),
@@ -43,7 +43,7 @@ export default class BTAssetDetail extends PureComponent{
             "expiration": block.expiration,
             "scope": [
                 "assetmng",
-                'btd121',
+                '12',
                 "datadealmng",
                 this.state.data.username
             ],
