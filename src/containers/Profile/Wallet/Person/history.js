@@ -2,80 +2,13 @@ import React,{PureComponent} from 'react'
 import { Pagination } from 'antd';
 import {Table} from 'antd'
 import {Icon} from 'antd'
-const list=[{
-    'id':1,
-    'exhash':'0xb084f732047fe39a2efc610cc9db603f88c7c81fdb45c67e40685928ed150cc7',
-    'in_out':'转入',
-    'age':1516247901000,
-    'coin':230,
-    'from':'0x03f2b4d813cfa446450a3bb4f9a64558a0262d97',
-    'to':'0xa3e07488972c3029bd42b00c0d440583b9f7d156',
-    'account':'sire',
-    'account_address':'0xa3e07488972c3029bd42b00c0d440583b9f7d156'
-},{
-    'id':2,
-    'exhash':'0xb084f732047fe39a2efc610cc9db603f88c7c81fdb45c67e40685928ed150cc7',
-    'in_out':'转入',
-    'age':1516247901000,
-    'coin':230,
-    'from':'0x03f2b4d813cfa446450a3bb4f9a64558a0262d97',
-    'to':'0xa3e07488972c3029bd42b00c0d440583b9f7d156',
-    'account':'sire',
-    'account_address':'0xa3e07488972c3029bd42b00c0d440583b9f7d156'
-},{
-    'id':3,
-    'exhash':'0xb084f732047fe39a2efc610cc9db603f88c7c81fdb45c67e40685928ed150cc7',
-    'in_out':'转入',
-    'age':1516247901000,
-    'coin':230,
-    'from':'0x03f2b4d813cfa446450a3bb4f9a64558a0262d97',
-    'to':'0xa3e07488972c3029bd42b00c0d440583b9f7d156',
-    'account':'sire',
-    'account_address':'0xa3e07488972c3029bd42b00c0d440583b9f7d156'
-},{
-    'id':4,
-    'exhash':'0xb084f732047fe39a2efc610cc9db603f88c7c81fdb45c67e40685928ed150cc7',
-    'in_out':'转入',
-    'age':1516247901000,
-    'coin':230,
-    'from':'0x03f2b4d813cfa446450a3bb4f9a64558a0262d97',
-    'to':'0xa3e07488972c3029bd42b00c0d440583b9f7d156',
-    'account':'sire',
-    'account_address':'0xa3e07488972c3029bd42b00c0d440583b9f7d156'
-},{
-    'id':5,
-    'exhash':'0xb084f732047fe39a2efc610cc9db603f88c7c81fdb45c67e40685928ed150cc7',
-    'in_out':'转入',
-    'age':1516247901000,
-    'coin':230,
-    'from':'0x03f2b4d813cfa446450a3bb4f9a64558a0262d97',
-    'to':'0xa3e07488972c3029bd42b00c0d440583b9f7d156',
-    'account':'sire',
-    'account_address':'0xa3e07488972c3029bd42b00c0d440583b9f7d156'
-},{
-    'id':7,
-    'exhash':'0xb084f732047fe39a2efc610cc9db603f88c7c81fdb45c67e40685928ed150cc7',
-    'in_out':'转入',
-    'age':1516247901000,
-    'coin':230,
-    'from':'0x03f2b4d813cfa446450a3bb4f9a64558a0262d97',
-    'to':'0xa3e07488972c3029bd42b00c0d440583b9f7d156',
-    'account':'sire',
-    'account_address':'0xa3e07488972c3029bd42b00c0d440583b9f7d156'
-},{
-    'id':8,
-    'exhash':'0xb084f732047fe39a2efc610cc9db603f88c7c81fdb45c67e40685928ed150cc7',
-    'in_out':'转入',
-    'age':1516247901000,
-    'coin':230,
-    'from':'0x03f2b4d813cfa446450a3bb4f9a64558a0262d97',
-    'to':'0xa3e07488972c3029bd42b00c0d440583b9f7d156',
-    'account':'sire',
-    'account_address':'0xa3e07488972c3029bd42b00c0d440583b9f7d156'
-    }];
+import BTFetch from '../../../../utils/BTFetch'
 class Detail extends PureComponent{
     constructor(props){
         super(props);
+        this.state={
+            history:[],
+        }
     }
     render(){
         return <div className="detail">
@@ -97,11 +30,32 @@ export default class History extends PureComponent{
     constructor(props){
         super(props);
         this.state={
-            history:list,
+            history:[],
         }
     }
     handleOver(e){
+        console.log(e)
         // e.target.parentNode.after(_detail);
+    }
+    componentDidMount(){
+        //转账历史记录
+        let url='http://10.104.21.10:8080/v2/user/QueryTransfer';
+        let data={
+            "userName": "btd121",
+            "random": "fileName123",
+            "signatures": "0xxxx"
+        };
+        BTFetch(url,'post',data,{
+            full_path:true,
+        }).then(res=>{
+            if(res.code == '1'){
+                let history=JSON.parse(res.data);
+                this.setState({
+                    history:history,
+                });
+                console.log(this.state.history)
+            }
+        })
     }
     render(){
         return (
@@ -117,13 +71,13 @@ export default class History extends PureComponent{
                         <span className='in_out'>&nbsp;</span>
                         <span className='to'>To</span>
                         {/*<span className='account'>账户名称</span>*/}
-                        <span className="account_address">账户详细地址</span>
+                        <span className="account_address">区块号</span>
                     </li>
                     {
-                        this.state.history.map((data)=>{
+                        this.state.history.map((data,index)=>{
                             let date1 = new Date(data.age).toLocaleString();
                             return (
-                                <li key={data.id} onClick={(e)=>this.handleOver(e)}>
+                                <li key={index} onClick={()=>this.handleOver(index)}>
                                     <span className='icon'>
                                         {/*<Icon type="arrow-up" style={{ fontSize: 16, color: '#00b1a9' }} />*/}
                                         {/*<img src="../../../../static/img/show.png" alt=""/>*/}
@@ -133,16 +87,16 @@ export default class History extends PureComponent{
                                         <img src="../../../../static/img/info.png" alt=""/>
 
                                     </span>
-                                    <span className="exhash">{data.exhash}</span>
-                                    <span className='age'>{date1}</span>
-                                    <span className='coin'>{data.coin}</span>
+                                    <span className="exhash">{data.tx_id}</span>
+                                    <span className='age'>{data.tx_time}</span>
+                                    <span className='coin'>{data.price}</span>
                                     <span className='from'>{data.from}</span>
                                     <span className='in_out'>
                                         <Icon type="arrow-right" style={{ fontSize: 16, color: '#00b1a9' }} />
                                     </span>
                                     <span className='to'>{data.to}</span>
                                     {/*<span className='account'>{data.account}</span>*/}
-                                    <span className='account_address'>{data.account_address}</span>
+                                    <span className='account_address'>{data.block_num}</span>
                                 </li>
                             )
                         })
