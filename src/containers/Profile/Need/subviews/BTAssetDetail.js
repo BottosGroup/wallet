@@ -26,7 +26,7 @@ export default class BTAssetDetail extends PureComponent{
             { title: 'PublishDate', dataIndex:'publish_date', key: 'publishDate'},
             { title: 'Sample', dataIndex: 'sample_path', key: 'sample' ,render:(sample_path)=>{
                     return(
-                        <a href={sample_path}>{sample_path}   Download</a>
+                        <a href={sample_path}>Download</a>
                     )
 
                 }},
@@ -64,6 +64,7 @@ export default class BTAssetDetail extends PureComponent{
                 feature_tag:111
             })
         }).then(response=>response.json()).then(data=>{
+            console.log(data)
             // let resultData = data.data
             // console.log({
             //     resultData
