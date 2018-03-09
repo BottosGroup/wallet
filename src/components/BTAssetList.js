@@ -24,9 +24,14 @@ export default class BTAssetList extends PureComponent{
                 type:'asset',
                 value:this.state.value
             }
-        }else{
+        }else if(this.state.type == 'assetTemp'){
             callBackData = {
                 type:'assetTemp',
+                value:this.state.value
+            }
+        }else{
+            callBackData = {
+                type:'other',
                 value:this.state.value
             }
         }
