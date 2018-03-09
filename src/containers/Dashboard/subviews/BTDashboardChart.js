@@ -40,10 +40,8 @@ export default class BTDashboardChart extends PureComponent{
     render(){
         return(
             <div >
-                <div
-                <LineChart width={820} height={250} data={data}
-
-                    >
+                <div>
+                    <LineChart width={820} height={250} data={data}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="name" />
                         <YAxis />
