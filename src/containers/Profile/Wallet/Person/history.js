@@ -11,17 +11,35 @@ class Detail extends PureComponent{
         }
     }
     render(){
+        let data = this.props.historydetail;
+        // console.log(this.state.history);
         return <div className="detail">
+           {/* {
+                this.state.history.length == 0 ? <span></span>
+                    :
+                    ( <div className='left'>
+                        <p><span>交易号&nbsp;:&nbsp;</span><span>{data.tx_id}</span></p>
+                        <p><span>Form&nbsp;:&nbsp;</span><span>{data.from}</span></p>
+                        <p><span>时间&nbsp;:&nbsp;</span><span>{data.tx_time}</span></p>
+
+                    </div>
+                    <div className="right">
+                        <p><span>块号&nbsp;:&nbsp;</span><span>{data.block_num}</span></p>
+                        <p><span>To&nbsp;:&nbsp;</span><span>{data.to}</span></p>
+                        <p><span>金额&nbsp;:&nbsp;</span><span>转出&nbsp;{data.price}BTO</span></p>
+                    </div>
+                )
+            }*/}
             <div className='left'>
-                <p><span>交易号&nbsp;:&nbsp;</span><span>23243214321413241243214321</span></p>
-                <p><span>Form&nbsp;:&nbsp;</span><span>23243214321413241243214321</span></p>
-                <p><span>时间&nbsp;:&nbsp;</span><span>2012-1-32 11:34;22am</span></p>
+                <p><span>交易号&nbsp;:&nbsp;</span><span>{data.tx_id}</span></p>
+                <p><span>Form&nbsp;:&nbsp;</span><span>{data.from}</span></p>
+                <p><span>时间&nbsp;:&nbsp;</span><span>{data.tx_time}</span></p>
 
             </div>
             <div className="right">
-                <p><span>块号&nbsp;:&nbsp;</span><span>23243214321413241243214321</span></p>
-                <p><span>To&nbsp;:&nbsp;</span><span>23243214321413241243214321</span></p>
-                <p><span>金额&nbsp;:&nbsp;</span><span>转出&nbsp;32BOB</span></p>
+                <p><span>块号&nbsp;:&nbsp;</span><span>{data.block_num}</span></p>
+                <p><span>To&nbsp;:&nbsp;</span><span>{data.to}</span></p>
+                <p><span>金额&nbsp;:&nbsp;</span><span>转出&nbsp;{data.price}BTO</span></p>
             </div>
         </div>
     }
@@ -31,12 +49,11 @@ export default class History extends PureComponent{
         super(props);
         this.state={
             history:[],
+            historydetail1:[]
         }
     }
-    handleOver(e){
-        console.log(e)
-        // e.target.parentNode.after(_detail);
-    }
+
+
     componentDidMount(){
         //转账历史记录
         let url='http://10.104.21.10:8080/v2/user/QueryTransfer';
@@ -55,7 +72,16 @@ export default class History extends PureComponent{
                 });
                 console.log(this.state.history)
             }
-        })
+        });
+    }
+    handleOver(e){
+
+        this.setState({
+            historydetail1:(this.state.history)[e],
+        });
+        console.log(e,this.state.historydetail1)
+
+        // e.target.parentNode.after(_detail);
     }
     render(){
         return (
@@ -102,7 +128,7 @@ export default class History extends PureComponent{
                         })
                     }
                 </ul>
-                <Detail/>
+                <Detail historydetail={1} />
 
                 <Pagination showQuickJumper defaultCurrent={2} total={20}  />
 
