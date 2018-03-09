@@ -2,7 +2,7 @@ import React,{PureComponent} from 'react'
 import {Link} from 'react-router'
 import './styles.less'
 import BTFetch from '../../../utils/BTFetch'
-import {Icon} from 'antd'
+import {Icon,Button,message} from 'antd'
 import {getBlockInfo, getDataInfo} from "../../../utils/BTCommonApi";
 const IconText = ({ type, text }) => (
     <span>
@@ -41,8 +41,12 @@ export default class Assetlist extends PureComponent{
                 }
             }
         };
-        let getDataBin=(await getDataInfo(data)).data.bin;
-        console.log(getDataBin)
+        let dataInfo = await getDataInfo(data);
+        if(dataInfo == undefined || dataInfo.code==500) {
+            message.error('购买失败')
+            return
+        };
+        let getDataBin = dataInfo.data.bin;
         let param={
             "ref_block_num": block.ref_block_num,
             "ref_block_prefix": block.ref_block_prefix,
@@ -112,7 +116,8 @@ export default class Assetlist extends PureComponent{
                     <span>{data.price}</span>
                 </div>
                 <div className='bottom'>
-                    <span onClick={(e)=>this.buy(e)}>购买</span>
+                    {/* <span onClick={(e)=>this.buy(e)}>购买</span> */}
+                    <Button type="primary" onClick={(e)=>{this.buy(e)}}>购买</Button>
                     <Link to="/profile/shopcart"><Icon type="shopping-cart" style={{fontSize:30,color:'black'}}/></Link>
                 </div>
                 {/*<p onClick={()=>this.commitAsset()}>提交资产</p>*/}

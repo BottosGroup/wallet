@@ -19,6 +19,13 @@ export default class BTRequireCell extends PureComponent{
             visible:true
         })
     }
+
+    handleFile(fileInfo){
+        console.log({
+            fileInfo
+        })
+    }
+
     render(){
         let data = this.props
         let linkto = this.props.linkto || '/'
@@ -28,7 +35,7 @@ export default class BTRequireCell extends PureComponent{
         }
 
         return <div className='list'>
-            <BTAssetList ref={(ref)=>this.assetListModal = ref}/>
+            <BTAssetList ref={(ref)=>this.assetListModal = ref} handleFile={(fileInfo)=>this.handleFile(fileInfo)}/>
             <div className="img">
                 <img src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png" alt="logo" width="250"/>
                 <p></p>

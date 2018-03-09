@@ -15,12 +15,18 @@ export default class BTDemanDetail extends PureComponent{
         })
     }
 
+    handleFile(fileInfo){
+        console.log({
+            fileInfo
+        })
+    }
+
     render(){
         let data = this.props.location.state
         return(
             <div>
 
-                <BTAssetList ref={(ref)=>this.assetListModal = ref}/>
+                <BTAssetList ref={(ref)=>this.assetListModal = ref} handleFile={(fileInfo)=>this.handleFile(fileInfo)}/>
             <div className="detailContentStyle">
                 <div style={{padding:20}}>
                     <p><span>需求ID:</span>2378979948237498237423947329</p>

@@ -64,7 +64,7 @@ export default class BTAssetCell extends PureComponent{
                             <li><IconText type="star-o" text="156" /></li>
                             <li><IconText type="like-o" text="156" /></li>
                             <li><IconText type="message" text="2" /></li>
-                            <li><Button type="primary" size="small" onClick={()=>{this.buyButtonClick()}}>购买</Button></li>
+                            <li><Button type="primary" onClick={()=>{this.buyButtonClick()}}>购买</Button></li>
                             <li><Button type="danger" size="small">加入购物车</Button></li>
                         </ul>
                     </div>
