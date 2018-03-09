@@ -202,9 +202,8 @@ class BTHeader extends PureComponent{
                 </div>
 
                 <div className="loginBtnStyle">
-                    <Button onClick={()=>this.handlePublishDemand()} style={{marginRight:10,background:"#1a1a1a",color:"white"}}><FormattedMessage id='Header.PublishDemand' defaultMessage="发布需求"/></Button>
-                    <Button onClick={()=>this.handlePublishAsset()} style={{marginRight:10,background:"#1a1a1a",color:"white"}}>发布资产</Button>
-                    <div className="marginLeft marginRight"><Link to="/profile/shopcart"><Icon type="shopping-cart" style={{fontSize:30,color:'white'}}/></Link></div>
+                    <Button onClick={()=>this.handlePublishDemand()} style={{marginRight:10,color:"#444444",border:"1px solid #CCCCCC"}}><FormattedMessage id='Header.PublishDemand' defaultMessage="发布需求"/></Button>
+                    <Button onClick={()=>this.handlePublishAsset()} style={{marginRight:10,color:"#444444",border:"1px solid #CCCCCC"}}>发布资产</Button>
                     <div>
                         {
                             this.state.isLogin ? 
@@ -221,7 +220,7 @@ class BTHeader extends PureComponent{
 
                     <div>
                         <Dropdown overlay={this.keyStoreMenu()}>
-                            <i className="iconfont icon-key" style={{fontSize:25,color:'white',marginLeft:10}}/>
+                            <i className="iconfont icon-key" style={{fontSize:25,marginLeft:10}}/>
                         </Dropdown>
                     </div>
 
