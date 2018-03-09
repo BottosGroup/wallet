@@ -9,7 +9,8 @@ export default class Walletall extends PureComponent{
     constructor(props){
         super(props);
         this.state={
-            acount:0
+            acount:0,
+            history:[]
         }
     }
     componentDidMount(){
@@ -26,7 +27,8 @@ export default class Walletall extends PureComponent{
                 })
             }
 
-        })
+        });
+
     }
     render(){
         return (
@@ -35,7 +37,7 @@ export default class Walletall extends PureComponent{
                     <Transfer />
                     <Wallet acount={this.state.acount} />
                 </div>
-                <History/>
+                <History />
             </div>
 
 

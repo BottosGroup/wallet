@@ -112,7 +112,8 @@ const props = {
                         "file_name":file.name,
                         "file_policy":"policytest",
                         "file_number":1,
-                        "signature":"0xxxxx"
+                        "signature":"0xxxxx",
+                        "auth_path":"sigtest"
                     }
                 }
             }
@@ -177,6 +178,8 @@ const props = {
                                 }
 
                             })
+                    }else{
+                        alert('error！！！')
                     }
                     console.log(res)
                 })
@@ -202,10 +205,12 @@ export default class BTMyAssetSet extends PureComponent{
         super(props);
         this.state = {
             data:''||callback_data,
-            none_hash:''
+            none_hash:'',
+            hash:''
         }
     };
-        columns(data) {
+    columns(data) {
+        console.log(data);
             return [
                 {title: 'FileName', dataIndex: 'file_name', key: 'fileName'},
                 {title: 'FileSize', dataIndex: 'file_size', key: 'fileSize'},
@@ -213,24 +218,53 @@ export default class BTMyAssetSet extends PureComponent{
                 {title: 'sampleSize', dataIndex: 'sampleSize', key: 'sampleSize'},
                 {title: 'Date', dataIndex: 'date', key: 'date'},
                 {
-                    title: "Download", dataIndex: 'download', key: 'x', render: (sample_href) =>
-                        <a href={sample_href}>
-                            <Icon type="download" style={{color: "black", fontWeight: 900}}/>
-                        </a>
+                    title: "Download", dataIndex: 'file_name', key: 'x', render: (item)=>{
+                        console.log({
+                            item
+                        })
+                        return(
+                            <a onClick={()=>this.download(item)}>
+                                <Icon type="download" style={{color: "black", fontWeight: 900}}/>
+                            </a>
+                        )
+                    }
                 },
                 {
+                    title: "Delete", dataIndex: 'delete', key: 'x', render: (text, record)=>{
+                        return (
+                            <Popconfirm title="Sure to delete?" onConfirm={() => this.onDelete(record.key)}>
+                                <a  href="#" style={{color: "#6d6df5"}}>Delete</a>
+                            </Popconfirm>
+                        );
+                    }
+                }
+                /*{
                     title: 'Delete', dataIndex: 'delete',
                     render: (text, record) => {
                         return (
                             <Popconfirm title="Sure to delete?" onConfirm={() => this.onDelete(record.key)}>
-                                <a href="#" style={{color: "#6d6df5"}}>Delete</a>
+                                <a  href="#" style={{color: "#6d6df5"}}>Delete</a>
                             </Popconfirm>
                         );
                     },
-                },
+                },*/
             ];
-        }
-
+     }
+     download(dataIndex){
+        console.log(dataIndex);
+        BTFetch('http://10.104.20.80:8080/v2/asset/getDownLoadURL','post',{
+            'userName':'btd121',
+            'fileName':dataIndex
+        },{
+            full_path:true,
+        }).then(res=>{
+            console.log(res);
+            if(res.code==1){
+                debugger;
+                this.setState({href:res.data});
+            }
+        })
+    }
 
 
     onDelete(key){

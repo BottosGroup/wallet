@@ -1,9 +1,9 @@
 const Router = require('koa-router')
 const router = new Router()
-const yuanjia = require('../data/yuanjia')
+const yj = require('../data/yj')
 
 
-router.get('/asset/modify',yuanjia.asset_modify)
+router.post('/user/register',yj.user_register)
 
 
 module.exports = router.routes()
