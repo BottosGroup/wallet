@@ -40,7 +40,7 @@ export default class Login extends PureComponent{
 
         let blockInfo = await this.getBlockInfo();
         let data = await this.getDataInfo()
-        let keyStore = await getKeyStore((keyStore)=>{
+        let keyStore = await getKeyStore('keystore',(keyStore)=>{
             if(keyStore == undefined){
                 message.error('请先导入keyStore文件')
                 return;
@@ -68,12 +68,13 @@ export default class Login extends PureComponent{
                     if(response && response.code=='0'){
                         message.success('登录成功')
                         let accountInfo = {
-                            username:"yuanjunliang",
+                            username:this.state.username,
                             token:"jslkdfjsdlfa"
                         }
                         setAccount(accountInfo)
                         this.setState({
-                            visible:false
+                            visible:false,
+                            password:''
                         })
     
                         this.props.onHandleLogin(true)
@@ -104,7 +105,8 @@ export default class Login extends PureComponent{
 
     closeModal(){
         this.setState({
-            visible:false
+            visible:false,
+            password:''
         })
     }
 
@@ -117,7 +119,7 @@ export default class Login extends PureComponent{
             >
                 <div className="marginRight">
                     <div className="container row">
-                        <Input placeholder="请输入密码" className="marginRight" onChange={(e)=>{this.setState({password:e.target.value})}}/> 
+                       <Input type="password" placeholder="请输入密码" className="marginRight" onChange={(e)=>{this.setState({password:e.target.value})}}/> 
                         <Button type="danger" onClick={()=>this.onHandleUnlock()}>解锁</Button>
                     </div>
                 </div>

@@ -5,7 +5,6 @@ import {bindActionCreators} from 'redux'
 import * as headerActions from '../redux/actions/HeaderAction'
 import {connect} from 'react-redux'
 import {Button,Modal,Menu, Dropdown, Icon,message} from 'antd'
-import BTRowMenu from '../components/BTRowMenu'
 import BTLogin from './Login'
 import IsRegister from './Register'
 import { injectIntl, FormattedMessage, defineMessages } from 'react-intl';

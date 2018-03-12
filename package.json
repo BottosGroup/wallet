@@ -5,7 +5,7 @@
   "main": "main.js",
   "homepage": ".",
   "DEV": true,
-  "MOCK": false,
+  "MOCK": true,
   "dependencies": {
     "antd": "^3.2.1",
     "buffer": "^5.1.0",
@@ -14,6 +14,7 @@
     "electron-log": "^2.2.14",
     "eosjs-ecc": "^2.0.1",
     "event-emitter": "^0.3.5",
+    "node-uuid": "^1.4.8",
     "react": "^16.2.0",
     "react-amap": "^1.2.0",
     "react-dom": "^16.2.0",
@@ -43,7 +44,7 @@
     "koa-cors": "0.0.16",
     "koa-router": "^7.4.0",
     "react-app-rewire-less": "^2.1.0",
-    "react-app-rewired": "^1.4.1",
+    "react-app-rewired": "^1.5.0",
     "webpack-target-electron-renderer": "^0.4.0"
   }
 }

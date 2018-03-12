@@ -42,8 +42,7 @@ function createWindow () {
   win.webContents.openDevTools()
 
   win.once('ready-to-show', () => {
-    // win.show()
-    win.yuanjunliang = 'yuanjunliang'
+    win.show()
   })
 
   // 当 window 被关闭，这个事件会被触发。

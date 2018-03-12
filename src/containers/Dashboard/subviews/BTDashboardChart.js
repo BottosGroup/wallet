@@ -40,7 +40,7 @@ export default class BTDashboardChart extends PureComponent{
     render(){
         return(
             <div >
-                <div>
+                <div className="container row marginBottom" style={{alignItems:'center'}}>
                     <LineChart width={820} height={250} data={data}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="name" />
@@ -53,11 +53,11 @@ export default class BTDashboardChart extends PureComponent{
                         {/* <Line type="monotone" dataKey="data" stroke="#8884d8" />
                         <Line type="monotone" dataKey="requirement" stroke="#0596d8" /> */}
                     </LineChart>
-                    <div >
+                    <div>
                         <div>注册人数：1000000</div>
                         <div>
                             <span>交易金额：</span>
-                            <img src="http://upload.ouliu.net/i/2018012217455364b5l.png" alt=""/>
+                            <img src="http://upload.ouliu.net/i/2018012217455364b5l.png" style={{width:15,height:15}} alt=""/>
                             <span>30000</span>
                         </div>
                     </div>

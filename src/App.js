@@ -12,6 +12,9 @@ import './static/css/common.less'
 import RouterMap from './router/routerMap'
 // 将config文件设置为全局window对象
 window.config = require('./utils/config')
+console.log({
+  uuid:window.uuid
+})
 
 const store = configureStore();
 export default class App extends Component {

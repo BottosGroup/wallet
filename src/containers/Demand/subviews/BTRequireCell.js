@@ -33,7 +33,6 @@ export default class BTRequireCell extends PureComponent{
             pathname:linkto,
             state:data
         }
-
         return <div className='list'>
             <BTAssetList ref={(ref)=>this.assetListModal = ref} handleFile={(fileInfo)=>this.handleFile(fileInfo)}/>
             <div className="img">

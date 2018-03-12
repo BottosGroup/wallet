@@ -15,8 +15,6 @@ export default (url,method,params,options={
         reqUrl = mock.base_url+url
     }else if(options.service==='service'){
         reqUrl = service.base_url + service.version+url
-    }else{
-        reqUrl = blockchain.base_url + blockchain.version
     }
 
     // 如果自己写的全路径，直接用全路径

@@ -45,30 +45,22 @@ export default class BTDemand extends PureComponent{
             dataSource:[]
         }
     }
-    //
-    // componentDidMount(){
-    //     let reqUrl = '/requirement/query'
-    //     let accountInfo = getAccount()
-    //     let username = accountInfo.username;
-    //     let token = accountInfo.token;
-    //     let query_para = {
-    //
-    //     }
-    //
-    //     let params = {
-    //         username,
-    //         token,
-    //         query_para
-    //     }
-    //
-    //     BTFetch(reqUrl,'POST',params).then(response=>{
-    //         if(response && response.code=='0'){
-    //             this.setState({
-    //                 dataSource:response.data
-    //             })
-    //         }
-    //     })
-    // }
+    
+    componentDidMount(){
+        let reqUrl = '/requirement/query'
+
+        BTFetch(reqUrl,'POST').then(response=>{
+            console.log({
+                response
+            })
+            if(response && response.code=='0'){
+                let dataSource  = response.data && response.data.Row;
+                this.setState({
+                    dataSource:dataSource
+                })
+            }
+        })
+    }
 
     render(){
         return(

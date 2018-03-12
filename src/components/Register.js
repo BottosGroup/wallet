@@ -57,8 +57,8 @@ class Regist extends PureComponent{
         super(props)
     }
 
-    async onHandleSubmit(self){
-        const { getFieldDecorator,getFieldsValue,getFieldValue } = self;
+    async onHandleSubmit(){
+        const { getFieldDecorator,getFieldsValue,getFieldValue } = this.props.form;
         let fieldValues = getFieldsValue()
 
         // 获取表单参数
@@ -132,29 +132,27 @@ class Regist extends PureComponent{
 
         // 将两对私钥加密以后存储到本地
         let privateKeys = {
+            account_name:username,
             code:'0',
             owner_private_key:owner_private_key.toString(),
             owner_private_wif,
             active_private_key:active_private_key.toString(),
             active_private_wif
         }
+
         // 对两对私钥进行加密后存储成keystore文件
         let reqUrl = '/user/register'
         BTFetch(reqUrl,'POST',params)
         .then(response=>{
-            console.log({
-                response:response,
-                params:params
-            })
             if(response && response.code=='0'){
                 message.success('注册成功')
                
                 // 将两对私钥加密以后存储到user_data
-                // this.exportKeystore(privateKeys,password);
-                let privateKeyStr = JSON.stringify(privateKeys)
-                let cryptStr = BTCryptTool.aesEncrypto(privateKeyStr,password)
-                // 存储keystore文件到本地
-                setKeyStore(cryptStr)
+                this.exportKeystore(privateKeys,password);
+                // let privateKeyStr = JSON.stringify(privateKeys)
+                // let cryptStr = BTCryptTool.aesEncrypto(privateKeyStr,password)
+                // // 存储keystore文件到本地
+                // setKeyStore('keystore',cryptStr)
                 // 隐藏registModel
                 this.props.handleCancel()
             }
@@ -174,15 +172,14 @@ class Regist extends PureComponent{
         let cryptStr = BTCryptTool.aesEncrypto(privateKeyStr,password)
         let decryStr = BTCryptTool.aesDecrypto(cryptStr.toString(),password)
         // 存储keystore文件到本地
-        setKeyStore(cryptStr)
+        setKeyStore('keystore',cryptStr)
     }
 
     render(){
-        const self = this.props.form;
-        const {getFieldDecorator} = self;
+        const {getFieldDecorator} = this.props.form;
         return(
             <div>
-                <Form onSubmit={()=>{this.onHandleSubmit(self)}}>
+                <Form onSubmit={()=>{this.onHandleSubmit()}}>
                 <FormItem
                     mapPropsToFields
                     {...formItemLayout}

@@ -29,16 +29,16 @@ export default class BTDemanDetail extends PureComponent{
                 <BTAssetList ref={(ref)=>this.assetListModal = ref} handleFile={(fileInfo)=>this.handleFile(fileInfo)}/>
             <div className="detailContentStyle">
                 <div style={{padding:20}}>
-                    <p><span>需求ID:</span>2378979948237498237423947329</p>
+                    <p><span>需求ID:</span>{data.requirement_id}</p>
                     <p><span style={{fontSize:15,fontWeight:'bold'}}>标题:</span>{data.requirement_name}</p>
                     <p><span style={{fontSize:15,fontWeight:'bold'}}>资产类型:</span>{data.feature_tag}</p>
                     <p><span style={{fontSize:15,fontWeight:'bold'}}>期望价格:</span>{data.price}</p>
                     <p><span style={{fontSize:15,fontWeight:'bold'}}>下架时间:</span>{data.expire_time}</p>
-                    <div>
+                    {/* <div>
                         <Tag color="cyan">便宜</Tag>
                         <Tag color="cyan">实用</Tag>
                         <Tag color="cyan">有价值</Tag>
-                    </div>
+                    </div> */}
 
                     <div className="detailOptions">
                         <ul>
