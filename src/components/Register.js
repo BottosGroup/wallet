@@ -3,7 +3,9 @@ import {Modal,Form, Icon, Input, Button,Radio,Checkbox,message} from 'antd'
 import BTFetch from '../utils/BTFetch'
 import BTCryptTool from '../tools/BTCryptTool'
 import './styles.less'
-import {setKeyStore} from '../tools/BTIpcRenderer'
+import BTIpcRenderer from '../tools/BTIpcRenderer'
+import {exportFile} from '../utils/BTUtil'
+
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
 
@@ -11,19 +13,27 @@ export default class IsRegister extends PureComponent{
     constructor(props){
         super(props);
         this.state={
-            visible:false
+            visible:false,
+            isRegist:false,
+            fieldValues:{}
         }
     }
     
-    handleOk(){
-
-    }
-
     handleCancel(){
         this.setState({
-            visible:false
+            visible:false,
+            isRegist:false
         })
     }
+
+    registSuccess(params){
+        this.setState({
+            isRegist:params.isRegist,
+            cryptStr:params.cryptStr,
+            username:params.username
+        })
+    }
+
     render(){
         return (
         <Modal visible={this.state.visible}
@@ -35,11 +45,12 @@ export default class IsRegister extends PureComponent{
                        maskClosable='false'
                        footer={null}
         >
-            <RegistForm handleCancel={()=>this.handleCancel()}/>
+           {
+               this.state.isRegist ? <BTRegistSuccess  handleCancel={()=>this.handleCancel()} {...this.state}/> : <RegistForm handleCancel={()=>this.handleCancel()} registSuccess={(params)=>{this.registSuccess(params)}}/>
+           }
         </Modal>)
     }
 }
-
 
 const formItemLayout = {
     labelCol: {
@@ -146,15 +157,15 @@ class Regist extends PureComponent{
         .then(response=>{
             if(response && response.code=='0'){
                 message.success('注册成功')
-               
-                // 将两对私钥加密以后存储到user_data
-                this.exportKeystore(privateKeys,password);
-                // let privateKeyStr = JSON.stringify(privateKeys)
-                // let cryptStr = BTCryptTool.aesEncrypto(privateKeyStr,password)
-                // // 存储keystore文件到本地
-                // setKeyStore('keystore',cryptStr)
-                // 隐藏registModel
-                this.props.handleCancel()
+                let privateKeyStr = JSON.stringify(privateKeys)
+                let cryptStr = BTCryptTool.aesEncrypto(privateKeyStr,password)
+                // 存储keystore文件到本地
+                BTIpcRenderer.setKeyStore('keystore',cryptStr)
+                this.props.registSuccess({
+                    cryptStr,
+                    isRegist:true,
+                    username
+                })
             }
         })
         .catch(error=>{
@@ -170,9 +181,10 @@ class Regist extends PureComponent{
     exportKeystore(privateKeys,password){
         let privateKeyStr = JSON.stringify(privateKeys)
         let cryptStr = BTCryptTool.aesEncrypto(privateKeyStr,password)
-        let decryStr = BTCryptTool.aesDecrypto(cryptStr.toString(),password)
-        // 存储keystore文件到本地
-        setKeyStore('keystore',cryptStr)
+        this.props.registSuccess({
+            cryptStr,
+            isRegist:true
+        })
     }
 
     render(){
@@ -262,4 +274,24 @@ class Regist extends PureComponent{
     }
 }
 
-const RegistForm = Form.create()(Regist);
+const RegistForm = Form.create()(Regist); 
+
+
+class BTRegistSuccess extends PureComponent{
+    constructor(props){
+        super(props)
+    }
+
+    downloadKeystore(){
+        exportFile(this.props.cryptStr,this.props.username+'.bto')
+    }
+
+    render(){
+        return(
+            <div>
+                <Button type="primary" onClick={()=>{this.downloadKeystore()}}>下载keystore文件</Button>
+            </div>
+        )
+    }
+}
+

@@ -17,6 +17,8 @@ import {importFile,exportFile} from '../utils/BTUtil'
 import BTIpcRenderer from '../tools/BTIpcRenderer'
 import {deleteAccount,isLogin} from '../tools/localStore'
 
+const {dialog} = window.electron.remote
+
 class MenuLink extends PureComponent{
     constructor(props){
         super(props)
@@ -149,23 +151,21 @@ class BTHeader extends PureComponent{
     }
 
     importKeyStore(){
-        importFile((keyStore)=>{
-            BTIpcRenderer.setKeyStore(keyStore)
-        })
+        let keyStore = BTIpcRenderer.ipcImportFile()
+        BTIpcRenderer.setKeyStore('keystore',keyStore)
     }
 
     exportKeyStore(){
-        console.log('exportKeyStore')
         // 从本地取出keystore文件
-        BTIpcRenderer.getKeyStore((keyStore)=>{
-            exportFile(keyStore,'utf8','keystore.bto')
-        })
+        let keyStore = BTIpcRenderer.getKeyStore('keystore')
+        exportFile(keyStore.result,'keystore.bto')
+        
     }
 
     keyStoreMenu(){
         return(
             <Menu>
-                <Menu.Item key="1"><a href="javascript:;" className="file">导入KeyStore<input onChange={()=>this.importKeyStore()} type="file" name="" id="files" value=""/></a></Menu.Item>
+                <Menu.Item key="1"><a href="#" onClick={()=>this.importKeyStore()}>导入KeyStore</a></Menu.Item>
                 <Menu.Item key="2"><a href="#" onClick={()=>this.exportKeyStore()}>导出KeyStore</a></Menu.Item>
             </Menu>
         )

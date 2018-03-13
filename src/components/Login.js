@@ -4,22 +4,10 @@ import path from 'path'
 import BTCryptTool from '../tools/BTCryptTool'
 import BTFetch from '../utils/BTFetch';
 import {setAccount,getAccount,isLogin} from '../tools/localStore'
-import {getKeyStore} from '../tools/BTIpcRenderer'
+import BTIPcRenderer from '../tools/BTIpcRenderer'
+import {importFile} from '../utils/BTUtil'
 import ecc from 'eosjs-ecc'
 const Buffer = require('buffer').Buffer;
-// 文件导入
-const importFile = (callback)=>{
-    let selectedFile = document.getElementById("files").files[0];//获取读取的File对象
-    if(!selectedFile) return;
-    let name = selectedFile.name;//读取选中文件的文件名
-    let size = selectedFile.size;//读取选中文件的大小
-    let reader = new FileReader();//这里是核心！！！读取操作就是由它完成的。
-    reader.readAsText(selectedFile);//读取文件的内容
-    reader.onload = function(){
-        let rs = this.result
-        callback(rs)
-    }
-}
 
 export default class Login extends PureComponent{
     constructor(props){
@@ -28,11 +16,13 @@ export default class Login extends PureComponent{
         this.state = {
             visible:false,
             password:'',
-            keyStore:''
+            keyStore:'',
+            hasKeystore:false
         }
     }
 
     async onHandleUnlock(){
+        console.log('onHandleUnlock')
         if(this.state.password == ''){
             message.error('请输入密码')
             return
@@ -40,52 +30,52 @@ export default class Login extends PureComponent{
 
         let blockInfo = await this.getBlockInfo();
         let data = await this.getDataInfo()
-        let keyStore = await getKeyStore('keystore',(keyStore)=>{
-            if(keyStore == undefined){
-                message.error('请先导入keyStore文件')
+        let keyStoreResult = BTIPcRenderer.getKeyStore('keystore');
+        if(keyStoreResult.error){
+            message.error('请先导入keyStore文件')
+            return;
+        }
+        let keyStore = keyStoreResult.result;
+
+        let keyStoreObj = JSON.parse(keyStore)
+        // 用密码解密keyStore
+        try{
+            let decryptoStr = BTCryptTool.aesDecrypto(keyStoreObj,this.state.password);
+            let decryptoData = JSON.parse(decryptoStr);
+            if(decryptoData.code!='0'){
+                message.error('密码错误，请重新输入密码')
                 return;
             }
-            let keyStoreObj = JSON.parse(keyStore)
-
-            // 用密码解密keyStore
-            try{
-                let decryptoStr = BTCryptTool.aesDecrypto(keyStoreObj,this.state.password);
-                let decryptoData = JSON.parse(decryptoStr);
-                if(decryptoData.code!='0'){
-                    message.error('密码错误，请重新输入密码')
-                    return;
-                }
-                
-                let url = '/user/login'
-        
-                let params = {
-                    // blockInfo,
-                    // data
-                }
-        
-                BTFetch(url,'POST',params)
-                .then(response=>{
-                    if(response && response.code=='0'){
-                        message.success('登录成功')
-                        let accountInfo = {
-                            username:this.state.username,
-                            token:"jslkdfjsdlfa"
-                        }
-                        setAccount(accountInfo)
-                        this.setState({
-                            visible:false,
-                            password:''
-                        })
+            
+            let url = '/user/login'
     
-                        this.props.onHandleLogin(true)
-                    }else{
-                        message.error('登录失败')
+            let params = {
+                // blockInfo,
+                // data
+            }
+    
+            BTFetch(url,'POST',params)
+            .then(response=>{
+                if(response && response.code=='0'){
+                    message.success('登录成功')
+                    let accountInfo = {
+                        username:decryptoData.account_name,
+                        token:response.token
                     }
-                })
-            }catch(error){
-                message.error('密码错误，请重新输入密码')
-            } 
-        })
+                    setAccount(accountInfo)
+                    this.setState({
+                        visible:false,
+                        password:''
+                    })
+
+                    this.props.onHandleLogin(true)
+                }else{
+                    message.error('登录失败')
+                }
+            })
+        }catch(error){
+            message.error('密码错误，请重新输入密码')
+        } 
     }
 
     // 获取区块信息
@@ -110,6 +100,11 @@ export default class Login extends PureComponent{
         })
     }
 
+    importKeyStore(){
+        let keyStore = BTIPcRenderer.ipcImportFile()
+        BTIPcRenderer.setKeyStore('keystore',keyStore)
+    }
+
     render(){
         return(
             <Modal 
@@ -119,9 +114,12 @@ export default class Login extends PureComponent{
             >
                 <div className="marginRight">
                     <div className="container row">
-                       <Input type="password" placeholder="请输入密码" className="marginRight" onChange={(e)=>{this.setState({password:e.target.value})}}/> 
+                       <Input type="password" placeholder="请输入密码" className="marginRight" value={this.state.password} onChange={(e)=>{this.setState({password:e.target.value})}}/> 
                         <Button type="danger" onClick={()=>this.onHandleUnlock()}>解锁</Button>
                     </div>
+                    {
+                        this.state.hasKeystore ? <div></div> : (<div style={{marginTop:20}}><Button onClick={()=>this.importKeyStore()}>导入keystore文件</Button></div>)
+                    }
                 </div>
             </Modal>
         )

@@ -1,18 +1,34 @@
 const electron = window.electron;
 const ipcRenderer = electron.ipcRenderer;
+const {ipcEventName} = window.eventName;
 
-
-const GET_KEY_STORE = 'get-key-store';
-const GET_KEY_STORE_REPLY = 'get-key-store-reply'
-const SAVE_KEY_STORE = 'save-key-store'
-
-exports.getKeyStore = (fileName,callback)=>{
-    ipcRenderer.send(GET_KEY_STORE,fileName)
-    ipcRenderer.on(GET_KEY_STORE_REPLY,(event,response)=>{
-        callback(response)
-    })
+/**
+ * 
+ * @param {*} fileName 要获取的keystore的文件名，不需要加.bto
+ */
+const getKeyStore = (fileName)=>{
+    let responst = ipcRenderer.sendSync(ipcEventName.get_key_store,fileName);
+    return responst
 }
 
-exports.setKeyStore = (accountName,params)=>{
-    ipcRenderer.send(SAVE_KEY_STORE,accountName,params)
+const setKeyStore = (accountName,params)=>{
+    ipcRenderer.send(ipcEventName.save_key_store,accountName,params)
+}
+
+const ipcImportFile = ()=>{
+    let fileContent = ipcRenderer.sendSync(ipcEventName.import_file);
+    return fileContent
+}
+
+const getKeyStoreList = ()=>{
+    let keyStoreList = ipcRenderer.sendSync(ipcEventName.key_store_list);
+    return keyStoreList
+}
+
+
+export default {
+    getKeyStore,
+    setKeyStore,
+    ipcImportFile,
+    getKeyStoreList
 }

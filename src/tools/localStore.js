@@ -18,3 +18,4 @@ export const isLogin = ()=>{
     let account_info = getAccount()
     return !(account_info == undefined)
 }
+

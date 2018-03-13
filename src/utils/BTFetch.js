@@ -1,7 +1,6 @@
 import config from './config.js'
 const pkg = require('../../package.json')
 
-
 export default (url,method,params,options={
     full_path:false,
     service:'service'
